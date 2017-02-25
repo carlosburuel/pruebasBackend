@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+	android:padding="@dimen/veinte"
+	android:background="@android:color/white">
+
+
+
+	<TextView
+		style="@style/etiquetas_verdes"
+		android:text="@string/usuario"/>
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/linea_verde"
+		android:inputType="text"
+		android:textSize="22sp"
+		android:hint="@string/usuario"
+		android:imeOptions="actionNext"/>
+
+	<TextView
+		style="@style/etiquetas_verdes"
+		android:text="@string/clave"/>
+	<EditText
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/linea_verde"
+		android:inputType="text"
+		android:textSize="22sp"
+		android:hint="@string/clave"
+		android:imeOptions="actionDone"/>
+
+	<Button
+		android:layout_width="match_parent"
+		android:layout_height="40dp"
+		android:background="@drawable/redondeado_naranja"
+		android:layout_marginTop="@dimen/veinte"
+		android:textColor="@android:color/white"
+		android:textSize="22sp"
+		android:text="@string/iniciar_sesion"/>
+
+</LinearLayout>
