@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 
-import cburuel.stx.mx.testingws.ActividadLogin;
+import cburuel.stx.mx.testingws.Comunicacion.Comunicacion;
 import cburuel.stx.mx.testingws.R;
 import cburuel.stx.mx.testingws.Utilidades.Constant;
 
@@ -31,6 +31,9 @@ public class ElegirEXT
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_elegir_ext);
 
+		//Revision de si existe una sesión
+		elegirApertura();
+
 		o_RBTN_EXT1 = (RadioButton) findViewById(R.id.rbtnEXT1);
 		o_RBTN_EXT2 = (RadioButton) findViewById(R.id.rbtnEXT2);
 		o_BTN_CONTINUAR = (Button) findViewById(R.id.btnContinuar);
@@ -42,6 +45,24 @@ public class ElegirEXT
 		o_RBTN_EXT1.setChecked(true);
 		o_RBTN_EXT2.setChecked(false);
 		Constant.e_EXT_ELEGIDO = Constant.e_EXT1;
+	}
+
+	private void elegirApertura()
+	{
+		Class o_CLASE = null;
+		if( Comunicacion.existe_flag(this) )
+		{
+			o_CLASE = PruebaWs.class;
+		}
+		else if( !"".equals(Comunicacion.obtenerJWT(this)) )
+		{
+			o_CLASE = VerificarCuenta.class;
+		}
+		if( o_CLASE != null )
+		{
+			startActivity(new Intent(this, o_CLASE));
+			finish();
+		}
 	}
 
 	@Override

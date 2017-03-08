@@ -15,6 +15,7 @@ public class Constant
 	public static final int NOT_FOUND = 404;
 	public static final int INTERNAL_SERVER_ERROR = 500;
 
+	//http://narvi.klayware.com/index.php?ACTION=PYXTER_TOKENCASH_EXT1_EXT:C5A.EXT.
 	//Rutas principales
 	public static final String e_URL_BASE = "http://narvi.klayware.com/";
 	public static final String e_URL_PATH = "index.php?ACTION=";
@@ -22,8 +23,11 @@ public class Constant
 	public static final String e_EXT1 = "PYXTER_TOKENCASH_EXT1_EXT:C5A.EXT.";
 	public static final String e_EXT2 = "PYXTER_TOKENCASH_EXT2_EXT:C5A.EXT.";
 	public static String e_EXT_ELEGIDO = "";
+	public static String e_ACCION_ELEGIDA = "";
 
 	//Webservices dependiendo el EXT elegido
-	//Obtencion de llave EXT's
-	public static final String e_OBTENER_LLAVE_EXT = "REGISTRO_SESION.OBTENER_LLAVE";
+	public static final String e_OBTENER_LLAVE = "REGISTRO_SESION.OBTENER_LLAVE";
+	public static final String e_INICIAR_SESION = "REGISTRO_SESION.INICIAR_SESION";
+	public static final String e_VALIDAR_VINCULACION = "REGISTRO_SESION.VALIDAR_VINCULACION";
+	public static final String e_VINCULAR = "REGISTRO_SESION.VINCULAR";
 }

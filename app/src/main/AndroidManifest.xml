@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="cburuel.stx.mx.testingws">
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+  package="cburuel.stx.mx.testingws">
 
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -21,7 +22,9 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".ActividadLogin"/>
+		<activity android:name=".Actividades.ActividadLogin"/>
+		<activity android:name=".Actividades.VerificarCuenta"/>
+		<activity android:name=".Actividades.PruebaWs"/>
 
 		<service android:name=".Servicios.BackendService"/>
 	</application>

@@ -93,18 +93,60 @@ public class BackendService
 			Call<Responses> o_LLAMADA = null;
 			switch( o_INTENT.getAction() )
 			{
-				case Constant.e_OBTENER_LLAVE_EXT:
+				case Constant.e_OBTENER_LLAVE:
 					if( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) )
 					{
-						WsRegistroSesion.WsObtenerLlaveEXT1 o_ObtenerLlave
+						WsRegistroSesion.WsObtenerLlaveEXT1 o_OBTENER_LLAVE
 							= getRetrofit(false).create(WsRegistroSesion.WsObtenerLlaveEXT1.class);
-						o_LLAMADA = o_ObtenerLlave.obtenerLlave(o_PETICION);
+						o_LLAMADA = o_OBTENER_LLAVE.obtenerLlave(o_PETICION);
 					}
 					else
 					{
-						WsRegistroSesion.WsObtenerLlaveEXT2 o_ObtenerLlave
+						WsRegistroSesion.WsObtenerLlaveEXT2 o_OBTENER_LLAVE
 							= getRetrofit(false).create(WsRegistroSesion.WsObtenerLlaveEXT2.class);
-						o_LLAMADA = o_ObtenerLlave.obtenerLlave(o_PETICION);
+						o_LLAMADA = o_OBTENER_LLAVE.obtenerLlave(o_PETICION);
+					}
+					break;
+				case Constant.e_INICIAR_SESION:
+					if( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) )
+					{
+						WsRegistroSesion.WsIniciarSesionEXT1 o_INICIAR_SESION
+							= getRetrofit(false).create(WsRegistroSesion.WsIniciarSesionEXT1.class);
+						o_LLAMADA = o_INICIAR_SESION.iniciarSesion(o_PETICION);
+					}
+					else
+					{
+						WsRegistroSesion.WsIniciarSesionEXT2 o_INICIAR_SESION
+							= getRetrofit(false).create(WsRegistroSesion.WsIniciarSesionEXT2.class);
+						o_LLAMADA = o_INICIAR_SESION.iniciarSesion(o_PETICION);
+					}
+					break;
+				case Constant.e_VALIDAR_VINCULACION:
+					if( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) )
+					{
+						WsRegistroSesion.WsValidarVinculacionEXT1 o_VALIDAR_VINCULACION
+							= getRetrofit(false).create(WsRegistroSesion.WsValidarVinculacionEXT1.class);
+						o_LLAMADA = o_VALIDAR_VINCULACION.validarVinculacion(o_PETICION);
+					}
+					else
+					{
+						WsRegistroSesion.WsValidarVinculacionEXT2 o_VALIDAR_VINCULACION
+							= getRetrofit(false).create(WsRegistroSesion.WsValidarVinculacionEXT2.class);
+						o_LLAMADA = o_VALIDAR_VINCULACION.validarVinculacion(o_PETICION);
+					}
+					break;
+				case Constant.e_VINCULAR:
+					if( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) )
+					{
+						WsRegistroSesion.WsVincularEXT1 o_VINCULAR
+							= getRetrofit(false).create(WsRegistroSesion.WsVincularEXT1.class);
+						o_LLAMADA = o_VINCULAR.vincular(o_PETICION);
+					}
+					else
+					{
+						WsRegistroSesion.WsVincularEXT1 o_INICIAR_SESION
+							= getRetrofit(false).create(WsRegistroSesion.WsVincularEXT1.class);
+						o_LLAMADA = o_INICIAR_SESION.vincular(o_PETICION);
 					}
 					break;
 			}

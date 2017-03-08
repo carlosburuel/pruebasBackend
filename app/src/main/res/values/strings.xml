@@ -8,4 +8,10 @@
 	<string name="ext_2">EXT 2</string>
 	<string name="elegir_ext">Elige el EXT a probar</string>
 	<string name="continuar">Continuar</string>
+	<string name="instancia_cipher">RSA/ECB/PKCS1PADDING</string>
+	<string name="error_escritura_jwt">Error de escritura en JWT</string>
+	<string name="mensajeCuenta">Introduce\nel código de\nverificación</string>
+	<string name="codigoAqui">Introduce el código aquí:</string>
+	<string name="generar_token">enviar</string>
+	<string name="salir">Salir</string>
 </resources>

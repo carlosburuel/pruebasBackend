@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:padding="@dimen/veinte">
+
+	<TextView
+		android:id="@+id/textViewMensaje"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/mensajeCuenta"
+		android:textColor="@android:color/black"
+		android:gravity="center"
+		android:layout_marginTop="@dimen/veinte"
+		android:layout_marginRight="40dp"
+		android:layout_marginLeft="40dp"
+		android:textSize="22sp"/>
+	<TextView
+		android:id="@+id/textViewcodigoVerifica"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:text="@string/codigoAqui"
+		android:textColor="@android:color/black"
+		android:layout_marginTop="@dimen/cincuenta"
+		android:textSize="18sp"/>
+	<EditText
+		android:id="@+id/editTextVerifica"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="@drawable/borde_verde"
+		android:inputType="textCapCharacters|textNoSuggestions"
+		android:textColor="@android:color/black"
+		android:maxLength="6"
+		android:gravity="center"
+		android:textSize="22sp"/>
+	<Button
+		android:id="@+id/btnEnviar"
+		android:layout_marginTop="@dimen/cincuenta"
+		android:text="@string/generar_token"
+		style="@style/boton_verde"/>
+</LinearLayout>
