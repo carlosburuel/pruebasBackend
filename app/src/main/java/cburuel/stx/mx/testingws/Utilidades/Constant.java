@@ -19,9 +19,11 @@ public class Constant
 	public static final String e_URL_BASE = "http://narvi.klayware.com/";
 	public static final String e_URL_PATH = "index.php?ACTION=";
 	//Variantes de EXT's
-	public static String e_EXT1 = "PYXTER_TOKENCASH_EXT1_EXT:C5A.EXT.";
-	public static String e_EXT2 = "PYXTER_TOKENCASH_EXT2_EXT:C5A.EXT.";
+	public static final String e_EXT1 = "PYXTER_TOKENCASH_EXT1_EXT:C5A.EXT.";
+	public static final String e_EXT2 = "PYXTER_TOKENCASH_EXT2_EXT:C5A.EXT.";
+	public static String e_EXT_ELEGIDO = "";
 
-	//Registro / sesión
-	public static final String e_OBTENER_LLAVE = "PYXTER_TOKENCASH_EXT2_EXT:C5A.EXT.REGISTRO_SESION.OBTENER_LLAVE";
+	//Webservices dependiendo el EXT elegido
+	//Obtencion de llave EXT's
+	public static final String e_OBTENER_LLAVE_EXT = "REGISTRO_SESION.OBTENER_LLAVE";
 }

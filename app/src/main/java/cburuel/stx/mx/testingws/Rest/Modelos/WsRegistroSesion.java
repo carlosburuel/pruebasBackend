@@ -12,9 +12,15 @@ import retrofit2.http.POST;
 
 public interface WsRegistroSesion
 {
-	interface WsObtenerLlave
+	interface WsObtenerLlaveEXT1
 	{
-		@POST(Constant.e_URL_BASE + Constant.e_URL_PATH + Constant.e_OBTENER_LLAVE)
+		@POST(Constant.e_URL_BASE + Constant.e_URL_PATH + Constant.e_EXT1 + Constant.e_OBTENER_LLAVE_EXT)
+		Call<Responses> obtenerLlave(@Body Request request);
+	}
+
+	interface WsObtenerLlaveEXT2
+	{
+		@POST(Constant.e_URL_BASE + Constant.e_URL_PATH + Constant.e_EXT2 + Constant.e_OBTENER_LLAVE_EXT)
 		Call<Responses> obtenerLlave(@Body Request request);
 	}
 }

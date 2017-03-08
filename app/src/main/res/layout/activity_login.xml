@@ -6,9 +6,7 @@
   android:layout_height="match_parent"
 	android:padding="@dimen/veinte"
 	android:background="@android:color/white">
-
-
-
+	
 	<TextView
 		style="@style/etiquetas_verdes"
 		android:text="@string/usuario"/>

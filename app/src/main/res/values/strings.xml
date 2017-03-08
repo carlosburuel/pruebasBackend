@@ -4,4 +4,8 @@
 	<string name="clave">Nip / Contraseña</string>
 	<string name="iniciar_sesion">INICIAR SESIÓN</string>
 	<string name="no_permisos_escritura">La aplicacion no tiene permisos de escritura</string>
+	<string name="ext_1">EXT 1</string>
+	<string name="ext_2">EXT 2</string>
+	<string name="elegir_ext">Elige el EXT a probar</string>
+	<string name="continuar">Continuar</string>
 </resources>

@@ -38,11 +38,14 @@ public class ActividadLogin
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_actividad_login);
+		setContentView(R.layout.activity_login);
+		//Asignar el titulo
+		setTitle(
+			( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) ? "EXT1" : "EXT2" )
+			+ " en prueba");
 
 		//Registrar EventBus
-		EventBus.getDefault().register(this);
-		verificar_permisos();
+		verificarPermisos();
 	}
 
 	/**
@@ -73,7 +76,6 @@ public class ActividadLogin
 					Utilidad.mostrar_mensaje(this, R.string.no_permisos_escritura);
 					return;
 				}
-				EventBus.getDefault().unregister(this);
 				o_DIALOGO_PROGRESO.dismiss();
 			}
 		}
@@ -82,9 +84,9 @@ public class ActividadLogin
 	/**
 	 * Revision de permisos para solicitar datos de telefono
 	 */
-	private void verificar_permisos()
+	private void verificarPermisos()
 	{
-		o_DIALOGO_PROGRESO = ProgressDialog.show(this, "", "Leyendo informacion");
+		o_DIALOGO_PROGRESO = ProgressDialog.show(this, "", "Leyendo información");
 		if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != 0)
 		{
 			ActivityCompat.requestPermissions(this,
@@ -107,17 +109,10 @@ public class ActividadLogin
 	{
 		if( Utilidad.verificaConexion(this) )
 		{
-			if( !Comunicacion.existeLlavePublica(this) )
-			{
-				//Consulta de llave publica
-				Request o_PETICION = new Request(Comunicacion.obtenerFingerprint(this), "");
-				//Envio de la informacion en la consulta del servicio, donde se inyecta la accion
-				BackendService.keyService(this, o_PETICION, Constant.e_OBTENER_LLAVE);
-				return;
-			}
-			//Sacar de registro EventBus
-			EventBus.getDefault().unregister(this);
-			o_DIALOGO_PROGRESO.dismiss();
+			//Consulta de llave publica
+			Request o_PETICION = new Request(Comunicacion.obtenerFingerprint(this), "");
+			//Envio de la informacion en la consulta del servicio, donde se inyecta la accion
+			BackendService.keyService(this, o_PETICION, Constant.e_OBTENER_LLAVE_EXT);
 		}
 		else
 		{
@@ -161,8 +156,20 @@ public class ActividadLogin
 						//es diferente a permisos aceptado
 						if( e_permiso != PackageManager.PERMISSION_GRANTED)
 						{
-							//llamar cierra de sesion
-//							llamada_cierre_session();
+							//Alerta mostrada al negar permisos
+							new AlertDialog.Builder(this)
+								.setTitle("Permisos denegados")
+								.setMessage("No se cuenta con los permisos necesarios")
+								//agregar boton de respuesta posisiva
+								.setPositiveButton("Ok", new DialogInterface.OnClickListener()
+								{
+									@Override
+									public void onClick(DialogInterface dialog, int which)
+									{
+										//Encargada del cierre de aplicacion
+										finishAffinity();
+									}
+								}).show();
 						}
 					}
 					//proceso de revision
@@ -170,5 +177,19 @@ public class ActividadLogin
 				}
 				break;
 		}
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		EventBus.getDefault().register(this);
+	}
+
+	@Override
+	protected void onStop()
+	{
+		EventBus.getDefault().unregister(this);
+		super.onStop();
 	}
 }
