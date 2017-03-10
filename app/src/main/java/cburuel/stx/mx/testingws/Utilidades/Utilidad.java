@@ -1,8 +1,11 @@
 package cburuel.stx.mx.testingws.Utilidades;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 /**
@@ -50,5 +53,20 @@ public class Utilidad
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Remover foco de ventana actual
+	 * @param o_ACTIVIDAD Actividad donde se ocultara
+	 */
+	public static void quitarTeclado(Activity o_ACTIVIDAD)
+	{
+		View o_VISTA = o_ACTIVIDAD.getCurrentFocus();
+		if( o_VISTA != null )
+		{
+			InputMethodManager imm =
+				(InputMethodManager) o_ACTIVIDAD.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(o_VISTA.getWindowToken(), 0);
+		}
 	}
 }

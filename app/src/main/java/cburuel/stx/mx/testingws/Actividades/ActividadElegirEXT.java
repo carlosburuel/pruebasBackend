@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 
+
 import cburuel.stx.mx.testingws.Comunicacion.Comunicacion;
 import cburuel.stx.mx.testingws.R;
 import cburuel.stx.mx.testingws.Utilidades.Constant;
@@ -17,7 +18,7 @@ import cburuel.stx.mx.testingws.Utilidades.Constant;
  * @since 08/03/2017
  */
 
-public class ElegirEXT
+public class ActividadElegirEXT
 	extends AppCompatActivity
 	implements View.OnClickListener
 {
@@ -31,9 +32,6 @@ public class ElegirEXT
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_elegir_ext);
 
-		//Revision de si existe una sesión
-		elegirApertura();
-
 		o_RBTN_EXT1 = (RadioButton) findViewById(R.id.rbtnEXT1);
 		o_RBTN_EXT2 = (RadioButton) findViewById(R.id.rbtnEXT2);
 		o_BTN_CONTINUAR = (Button) findViewById(R.id.btnContinuar);
@@ -44,7 +42,24 @@ public class ElegirEXT
 
 		o_RBTN_EXT1.setChecked(true);
 		o_RBTN_EXT2.setChecked(false);
+		//Asignar defecto de EXT
 		Constant.e_EXT_ELEGIDO = Constant.e_EXT1;
+
+		//Revision de si existe una sesión
+		elegirApertura();
+	}
+
+	private void revisarPersistenciaEXT()
+	{
+		String e_EXT_PERSISTENTE = Comunicacion.obtenerContenidoArchivo(this, "codigo.txt");
+		if( e_EXT_PERSISTENTE.equals(Constant.e_EXT1) )
+		{
+			Constant.e_EXT_ELEGIDO = Constant.e_EXT1;
+		}
+		else if( e_EXT_PERSISTENTE.equals(Constant.e_EXT2) )
+		{
+			Constant.e_EXT_ELEGIDO = Constant.e_EXT2;
+		}
 	}
 
 	private void elegirApertura()
@@ -52,14 +67,16 @@ public class ElegirEXT
 		Class o_CLASE = null;
 		if( Comunicacion.existe_flag(this) )
 		{
-			o_CLASE = PruebaWs.class;
+			o_CLASE = ActividadPruebaWs.class;
 		}
 		else if( !"".equals(Comunicacion.obtenerJWT(this)) )
 		{
-			o_CLASE = VerificarCuenta.class;
+			o_CLASE = ActividadCuenta.class;
 		}
+
 		if( o_CLASE != null )
 		{
+			revisarPersistenciaEXT();
 			startActivity(new Intent(this, o_CLASE));
 			finish();
 		}
@@ -77,7 +94,6 @@ public class ElegirEXT
 			case R.id.btnContinuar:
 				//Enviar a pantalla de login
 				Intent o_INTENT = new Intent(this, ActividadLogin.class);
-				o_INTENT.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 				startActivity(o_INTENT);
 				break;
 		}

@@ -12,6 +12,8 @@
 	<string name="error_escritura_jwt">Error de escritura en JWT</string>
 	<string name="mensajeCuenta">Introduce\nel código de\nverificación</string>
 	<string name="codigoAqui">Introduce el código aquí:</string>
-	<string name="generar_token">enviar</string>
+	<string name="enviar">enviar</string>
 	<string name="salir">Salir</string>
+	<string name="rutaModulo">Ruta módulo</string>
+	<string name="parametros">Parametros</string>
 </resources>

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import javax.crypto.Cipher;
 
 import cburuel.stx.mx.testingws.R;
+import cburuel.stx.mx.testingws.Utilidades.Constant;
 
 /**
  * @author Carlos Buruel
@@ -52,7 +53,7 @@ public class Comunicacion
 		try
 		{
 			FileOutputStream o_FILE = o_CONTEXTO.getApplicationContext().openFileOutput("codigo.txt", Context.MODE_PRIVATE);
-			o_FILE.write("1".getBytes());
+			o_FILE.write(Constant.e_EXT_ELEGIDO.getBytes());
 			o_FILE.close();
 		}
 		catch (Exception e)
@@ -271,7 +272,7 @@ public class Comunicacion
 		return true;
 	}
 
-	private static String obtenerContenidoArchivo(Context o_CONTEXTO, String e_NOMBRE_ARCHIVO)
+	public static String obtenerContenidoArchivo(Context o_CONTEXTO, String e_NOMBRE_ARCHIVO)
 	{
 		String e_JWT;
 		try

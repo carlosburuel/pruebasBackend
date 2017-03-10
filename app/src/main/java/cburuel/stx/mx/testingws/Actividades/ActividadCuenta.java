@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,13 +32,14 @@ import cburuel.stx.mx.testingws.Utilidades.Utilidad;
  * @since 24/02/2017
  */
 
-public class VerificarCuenta
+public class ActividadCuenta
 	extends AppCompatActivity
 	implements View.OnClickListener
 {
 	private ProgressDialog o_DIALOGO_PROGRESO;
 
 	EditText o_ET_CODIGO;
+	Button o_BTN_ENVIAR;
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -47,8 +51,18 @@ public class VerificarCuenta
 				+ " en prueba");
 
 		o_ET_CODIGO = (EditText) findViewById(R.id.editTextVerifica);
+		o_BTN_ENVIAR = (Button) findViewById(R.id.btnEnviar);
 
-		findViewById(R.id.btnEnviar).setOnClickListener(this);
+		o_BTN_ENVIAR.setOnClickListener(this);
+		o_ET_CODIGO.setOnEditorActionListener(new TextView.OnEditorActionListener()
+		{
+			@Override
+			public boolean onEditorAction(TextView o_VISTA, int e_ACCION, KeyEvent o_EVENTO)
+			{
+				vincular();
+				return false;
+			}
+		});
 
 		validarVinculacion();
 	}
@@ -126,8 +140,7 @@ public class VerificarCuenta
 							if( o_DESCRY.getString("RESPUESTA").equals("OK") )
 							{
 								Comunicacion.save_flag(this);
-								Intent o_INTENT = new Intent(this, PruebaWs.class)
-									.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+								Intent o_INTENT = new Intent(this, ActividadPruebaWs.class);
 								startActivity(o_INTENT);
 							}
 						}

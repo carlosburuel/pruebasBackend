@@ -12,11 +12,9 @@
 		android:text="@string/usuario"/>
 	<EditText
 		android:id="@+id/etCelular"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@drawable/linea_verde"
-		android:inputType="text"
-		android:textSize="22sp"
+		style="@style/caja_verde"
+		android:inputType="numberSigned"
+		android:maxLength="10"
 		android:hint="@string/usuario"
 		android:imeOptions="actionNext"/>
 
@@ -25,22 +23,15 @@
 		android:text="@string/clave"/>
 	<EditText
 		android:id="@+id/etNipClave"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@drawable/linea_verde"
-		android:inputType="text"
-		android:textSize="22sp"
+		style="@style/caja_verde"
 		android:hint="@string/clave"
+		android:inputType="textNoSuggestions"
 		android:imeOptions="actionDone"/>
 
 	<Button
 		android:id="@+id/btnIniciarSesion"
-		android:layout_width="match_parent"
-		android:layout_height="40dp"
-		android:background="@drawable/redondeado_naranja"
+		style="@style/boton_rojo"
 		android:layout_marginTop="@dimen/veinte"
-		android:textColor="@android:color/white"
-		android:textSize="22sp"
 		android:text="@string/iniciar_sesion"/>
 
 </LinearLayout>

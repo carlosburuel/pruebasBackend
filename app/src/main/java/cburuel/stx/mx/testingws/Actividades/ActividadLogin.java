@@ -12,8 +12,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -54,6 +56,16 @@ public class ActividadLogin
 		o_ET_NIP_CLAVE = (EditText) findViewById(R.id.etNipClave);
 
 		findViewById(R.id.btnIniciarSesion).setOnClickListener(this);
+
+		o_ET_NIP_CLAVE.setOnEditorActionListener(new TextView.OnEditorActionListener()
+		{
+			@Override
+			public boolean onEditorAction(TextView o_VISTA, int e_ACCION, KeyEvent o_EVENTO)
+			{
+				validarDatos();
+				return false;
+			}
+		});
 		//Asignar el titulo
 		setTitle(
 			( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) ? "EXT1" : "EXT2" )
@@ -166,8 +178,7 @@ public class ActividadLogin
 										return;
 									}
 								}
-								Intent o_INTENT = new Intent(this, VerificarCuenta.class);
-								o_INTENT.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+								Intent o_INTENT = new Intent(this, ActividadCuenta.class);
 								startActivity(o_INTENT);
 							}
 						}
@@ -177,7 +188,6 @@ public class ActividadLogin
 						}
 						break;
 				}
-
 			}
 		}
 		o_DIALOGO_PROGRESO.dismiss();
@@ -285,7 +295,10 @@ public class ActividadLogin
 	protected void onResume()
 	{
 		super.onResume();
-		EventBus.getDefault().register(this);
+		if( !EventBus.getDefault().isRegistered(this) )
+		{
+			EventBus.getDefault().register(this);
+		}
 	}
 
 	@Override
