@@ -115,7 +115,8 @@ public class ActividadCuenta
 
 	//Respuesta del WB es leida aqui
 	@Subscribe(threadMode = ThreadMode.MAIN)
-	public void onEvent(BackendService.RestEventKey o_EVENT_KEY) {
+	public void onEvent(BackendService.RestEventKey o_EVENT_KEY)
+	{
 		//Recuperamos el resultado de respuesta
 		Responses restEventItem = o_EVENT_KEY.getItem();
 		//Revisamos si es existente y fue correcta la respuesta

@@ -1,5 +1,6 @@
 package cburuel.stx.mx.testingws.Actividades;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,8 +18,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cburuel.stx.mx.testingws.Adaptador.AdaptadorParametros;
 import cburuel.stx.mx.testingws.Comunicacion.Comunicacion;
@@ -27,6 +36,8 @@ import cburuel.stx.mx.testingws.Modelos.Parametros;
 import cburuel.stx.mx.testingws.R;
 import cburuel.stx.mx.testingws.Utilidades.ACTIONS;
 import cburuel.stx.mx.testingws.Utilidades.Constant;
+import cburuel.stx.mx.testingws.Utilidades.Utilidad;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * @author Carlos Buruel
@@ -95,19 +106,75 @@ public class ActividadPruebaWs
 		o_BTN_ENVIAR.setOnClickListener(this);
 	}
 
+	ProgressDialog o_PROGRESO;
+	private void hacerLLamado()
+	{
+		o_PROGRESO = ProgressDialog.show(this,"", "Probando WS", false);
+		//Encriptacion de datos
+		Map<String, String> m_DATOS_PAYLOAD = new HashMap<>();
+		m_DATOS_PAYLOAD.put("JWT", Comunicacion.obtenerJWT(this));
+		//Recorrido
+		for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.size(); e_INDEX++)
+		{
+			Parametros o_PARAMETRO = a_PARAMETROS.get(e_INDEX);
+			m_DATOS_PAYLOAD.put(o_PARAMETRO.getE_TEXTO_1(), o_PARAMETRO.getE_TEXTO_1());
+		}
+
+		JSONObject o_JSON_OBJECT = new JSONObject(m_DATOS_PAYLOAD);
+		String o_JSON_PARSE = Comunicacion.encriptarLlavePublica(o_JSON_OBJECT, this);
+		//Elementos de envio
+		RequestParams o_PARAMETROS = new RequestParams();
+		o_PARAMETROS.put("FINGERPRINT", Comunicacion.crearFingerprint(this));
+		o_PARAMETROS.put("PAYLOAD", o_JSON_PARSE);
+
+		String e_RUTA_MODULO = o_SP_ACCIONES.getSelectedItem().toString();
+		AsyncHttpClient o_CLIENTE = new AsyncHttpClient();
+		o_CLIENTE.post(
+			Constant.e_URL_BASE + Constant.e_URL_PATH + Constant.e_EXT_ELEGIDO + e_RUTA_MODULO,
+			o_PARAMETROS, new JsonHttpResponseHandler()
+			{
+				@Override
+				public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject o_RESPUESTA)
+				{
+					o_PROGRESO.dismiss();
+					Utilidad.mostrar_mensaje(ActividadPruebaWs.this, o_RESPUESTA.toString());
+				}
+
+				@Override
+				public void onSuccess(int statusCode, Header[] a_CABECERA, JSONObject o_RESPUESTA)
+				{
+					o_PROGRESO.dismiss();
+					try
+					{
+						String e_RESPUESTA = o_RESPUESTA.getString("RETURN");
+						JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(e_RESPUESTA, ActividadPruebaWs.this);
+
+						if( o_DESCRY != null )
+						{
+							Utilidad.mostrar_mensaje(ActividadPruebaWs.this, o_DESCRY.toString());
+						}
+					}
+					catch(Exception o_EX)
+					{
+						o_EX.printStackTrace();
+					}
+				}
+
+			}
+		);
+	}
+
 	@Override
 	public void onClick(View o_VISTA)
 	{
 		switch( o_VISTA.getId() )
 		{
 			case R.id.btnAgregar:
-				a_PARAMETROS.add(
-					new Parametros("Llave", "Valor")
-				);
+				a_PARAMETROS.add( new Parametros("Llave", "Valor") );
 				o_ADAPTADOR.notifyDataSetChanged();
 				break;
 			case R.id.btnConsultar:
-
+				hacerLLamado();
 				break;
 		}
 	}
