@@ -28,7 +28,8 @@
 		android:id="@+id/editTextVerifica"
 		style="@style/caja_verde"
 		android:maxLength="6"
-		android:gravity="center"/>
+		android:gravity="center"
+		android:imeOptions="actionDone"/>
 	<Button
 		android:id="@+id/btnEnviar"
 		android:layout_marginTop="@dimen/cincuenta"

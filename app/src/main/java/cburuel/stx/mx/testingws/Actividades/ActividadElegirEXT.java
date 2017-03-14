@@ -71,7 +71,7 @@ public class ActividadElegirEXT
 		}
 		else if( !"".equals(Comunicacion.obtenerJWT(this)) )
 		{
-			o_CLASE = ActividadCuenta.class;
+			o_CLASE = ActividadVerificaCuenta.class;
 		}
 
 		if( o_CLASE != null )

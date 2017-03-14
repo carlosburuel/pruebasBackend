@@ -16,4 +16,5 @@
 	<string name="salir">Salir</string>
 	<string name="rutaModulo">Ruta módulo</string>
 	<string name="parametros">Parametros</string>
+	<string name="resultado">Resultado</string>
 </resources>

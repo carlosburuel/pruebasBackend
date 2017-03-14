@@ -137,9 +137,10 @@ public class ActividadLogin
 	{
 		//Recuperamos el resultado de respuesta
 		Responses restEventItem = o_EVENT_KEY.getItem();
-		//revisar que exista respuesta
+		//Revisar que exista respuesta
 		if( restEventItem != null )
 		{
+			//Revisar que la respuesta sea positiva
 			if( restEventItem.isStatus() )
 			{
 				//Recuperar llave
@@ -178,7 +179,7 @@ public class ActividadLogin
 										return;
 									}
 								}
-								Intent o_INTENT = new Intent(this, ActividadCuenta.class);
+								Intent o_INTENT = new Intent(this, ActividadVerificaCuenta.class);
 								startActivity(o_INTENT);
 							}
 						}
@@ -188,6 +189,11 @@ public class ActividadLogin
 						}
 						break;
 				}
+			}
+			//Al ser negativa la respuesta
+			else
+			{
+				Utilidad.mostrar_mensaje(this, restEventItem.getRespuesta());
 			}
 		}
 		o_DIALOGO_PROGRESO.dismiss();

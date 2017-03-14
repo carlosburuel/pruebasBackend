@@ -31,12 +31,10 @@ import java.util.Map;
 
 import cburuel.stx.mx.testingws.Adaptador.AdaptadorParametros;
 import cburuel.stx.mx.testingws.Comunicacion.Comunicacion;
-import cburuel.stx.mx.testingws.Listener.OnItemClickListener;
 import cburuel.stx.mx.testingws.Modelos.Parametros;
 import cburuel.stx.mx.testingws.R;
 import cburuel.stx.mx.testingws.Utilidades.ACTIONS;
 import cburuel.stx.mx.testingws.Utilidades.Constant;
-import cburuel.stx.mx.testingws.Utilidades.Utilidad;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -53,6 +51,7 @@ public class ActividadPruebaWs
 	Spinner o_SP_ACCIONES;
 	RecyclerView o_RV_PARAMETROS;
 	AdaptadorParametros o_ADAPTADOR;
+	ProgressDialog o_PROGRESO;
 	List<Parametros> a_PARAMETROS = new ArrayList<>();
 
 	@Override
@@ -84,19 +83,9 @@ public class ActividadPruebaWs
 		o_BTN_ENVIAR = (Button) findViewById(R.id.btnConsultar);
 		o_RV_PARAMETROS = (RecyclerView) findViewById(R.id.rvParametros);
 
-		this.o_ADAPTADOR = new AdaptadorParametros(a_PARAMETROS);
+		o_ADAPTADOR = new AdaptadorParametros(a_PARAMETROS);
 		o_RV_PARAMETROS.setLayoutManager(new LinearLayoutManager(this));
 		o_RV_PARAMETROS.setAdapter(o_ADAPTADOR);
-		o_ADAPTADOR.setOnItemClickListener(new OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(Parametros o_PARAMETRO)
-			{
-				//Remover el objeto parametro de la lista actual
-				a_PARAMETROS.remove(o_PARAMETRO);
-				o_ADAPTADOR.notifyDataSetChanged();
-			}
-		});
 
 		ArrayAdapter<String> o_ADAPTADOR =
 			new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ACTIONS.a_WS_EXTS);
@@ -106,7 +95,6 @@ public class ActividadPruebaWs
 		o_BTN_ENVIAR.setOnClickListener(this);
 	}
 
-	ProgressDialog o_PROGRESO;
 	private void hacerLLamado()
 	{
 		o_PROGRESO = ProgressDialog.show(this,"", "Probando WS", false);
@@ -117,7 +105,7 @@ public class ActividadPruebaWs
 		for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.size(); e_INDEX++)
 		{
 			Parametros o_PARAMETRO = a_PARAMETROS.get(e_INDEX);
-			m_DATOS_PAYLOAD.put(o_PARAMETRO.getE_TEXTO_1(), o_PARAMETRO.getE_TEXTO_1());
+			m_DATOS_PAYLOAD.put(o_PARAMETRO.getE_TEXTO_1(), o_PARAMETRO.getE_TEXTO_2());
 		}
 
 		JSONObject o_JSON_OBJECT = new JSONObject(m_DATOS_PAYLOAD);
@@ -137,29 +125,43 @@ public class ActividadPruebaWs
 				public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject o_RESPUESTA)
 				{
 					o_PROGRESO.dismiss();
-					Utilidad.mostrar_mensaje(ActividadPruebaWs.this, o_RESPUESTA.toString());
+					Intent o_INTENT = new Intent(ActividadPruebaWs.this, ActividadResultado.class);
+					o_INTENT.putExtra("RESULTADO", o_RESPUESTA.toString());
+					startActivity(o_INTENT);
 				}
 
 				@Override
 				public void onSuccess(int statusCode, Header[] a_CABECERA, JSONObject o_RESPUESTA)
 				{
 					o_PROGRESO.dismiss();
+					String e_INFORMACION = "";
 					try
 					{
 						String e_RESPUESTA = o_RESPUESTA.getString("RETURN");
-						JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(e_RESPUESTA, ActividadPruebaWs.this);
-
-						if( o_DESCRY != null )
+						if( o_RESPUESTA.getBoolean("success") )
 						{
-							Utilidad.mostrar_mensaje(ActividadPruebaWs.this, o_DESCRY.toString());
+							JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(e_RESPUESTA, ActividadPruebaWs.this);
+
+							if( o_DESCRY != null )
+							{
+								e_INFORMACION = o_DESCRY.toString();
+							}
 						}
+						else
+						{
+							JSONObject o_ERROR = new JSONObject(e_RESPUESTA);
+							e_INFORMACION = o_ERROR.getString("ERROR_CODE");
+						}
+						//Envio de información de nueva ventana
+						Intent o_INTENT = new Intent(ActividadPruebaWs.this, ActividadResultado.class);
+						o_INTENT.putExtra("RESULTADO", e_INFORMACION);
+						startActivity(o_INTENT);
 					}
 					catch(Exception o_EX)
 					{
 						o_EX.printStackTrace();
 					}
 				}
-
 			}
 		);
 	}

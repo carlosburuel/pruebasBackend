@@ -1,59 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
-	<LinearLayout
-		android:orientation="vertical"
+	android:layout_height="match_parent"
+	android:background="@android:color/white">
+	<RelativeLayout
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:background="@android:color/white">
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_margin="@dimen/veinte"
-			android:textSize="20sp"
-			android:textColor="@android:color/black"
-			android:text="@string/rutaModulo"/>
-		<Spinner
-			android:id="@+id/spAcciones"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="@dimen/veinte"
-			android:layout_marginRight="@dimen/veinte"/>
+		android:layout_height="wrap_content">
 		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:layout_marginTop="@dimen/veinte"
-			android:layout_marginLeft="@dimen/veinte"
-			android:layout_marginRight="@dimen/veinte"
-			android:weightSum="2">
+			android:layout_height="wrap_content">
 			<TextView
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:layout_weight="1"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_margin="@dimen/veinte"
 				android:textSize="20sp"
 				android:textColor="@android:color/black"
-				android:text="@string/parametros"/>
-			<ImageView
-				android:id="@+id/btnAgregar"
-				android:layout_width="0dp"
-				android:layout_height="match_parent"
-				android:layout_weight="1"
-				android:scaleType="fitEnd"
-				android:src="@drawable/ic_plus"/>
+				android:text="@string/rutaModulo"/>
+			<Spinner
+				android:id="@+id/spAcciones"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="@dimen/veinte"
+				android:layout_marginRight="@dimen/veinte"/>
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/veinte"
+				android:layout_marginLeft="@dimen/veinte"
+				android:layout_marginRight="@dimen/veinte"
+				android:weightSum="2">
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:textSize="20sp"
+					android:textColor="@android:color/black"
+					android:text="@string/parametros"/>
+				<ImageView
+					android:id="@+id/btnAgregar"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:scaleType="fitEnd"
+					android:src="@drawable/ic_plus"/>
+			</LinearLayout>
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/rvParametros"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:scrollbars="vertical"
+				tools:listitem="@layout/elemento_parametro"/>
+
+			<Button
+				android:id="@+id/btnConsultar"
+				android:layout_margin="@dimen/veinte"
+				style="@style/boton_rojo"
+				android:text="@string/enviar"/>
 		</LinearLayout>
-
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/rvParametros"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"/>
-
-		<Button
-			android:id="@+id/btnConsultar"
-			android:layout_margin="@dimen/veinte"
-			style="@style/boton_rojo"
-			android:text="@string/enviar"/>
-	</LinearLayout>
+	</RelativeLayout>
 </ScrollView>

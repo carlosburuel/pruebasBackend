@@ -32,7 +32,7 @@ import cburuel.stx.mx.testingws.Utilidades.Utilidad;
  * @since 24/02/2017
  */
 
-public class ActividadCuenta
+public class ActividadVerificaCuenta
 	extends AppCompatActivity
 	implements View.OnClickListener
 {
@@ -94,7 +94,7 @@ public class ActividadCuenta
 
 		if( e_CODIGO_VINCULACION.length() != 6 )
 		{
-			Utilidad.mostrar_mensaje(this, "El código de verificación debe ser de 4 dígitos");
+			Utilidad.mostrar_mensaje(this, "El código de verificación debe ser de 6 dígitos");
 			return;
 		}
 
@@ -120,38 +120,48 @@ public class ActividadCuenta
 		//Recuperamos el resultado de respuesta
 		Responses restEventItem = o_EVENT_KEY.getItem();
 		//Revisamos si es existente y fue correcta la respuesta
-		if (restEventItem != null && restEventItem.isStatus())
+		if (restEventItem != null)
 		{
-			//Decodificar respuesta
-			JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(restEventItem.getRespuesta(), this);
-			try
+			if( restEventItem.isStatus() )
 			{
-				switch(Constant.e_ACCION_ELEGIDA)
+				//Decodificar respuesta
+				JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(restEventItem.getRespuesta(), this);
+				try
 				{
-					case Constant.e_VALIDAR_VINCULACION:
-						if( o_DESCRY != null && o_DESCRY.getString("RESPUESTA").equals("OK") )
-						{
-							Utilidad.mostrar_mensaje(getApplicationContext(), "Se ha enviado tu código de verificación");
-						}
-						break;
-					case Constant.e_VINCULAR:
-						//Verificar la existencia del JSON y respuesta
-						if( o_DESCRY != null && o_DESCRY.has("RESPUESTA") )
-						{
-							if( o_DESCRY.getString("RESPUESTA").equals("OK") )
+					switch(Constant.e_ACCION_ELEGIDA)
+					{
+						case Constant.e_VALIDAR_VINCULACION:
+							if( o_DESCRY != null && o_DESCRY.getString("RESPUESTA").equals("OK") )
 							{
-								Comunicacion.save_flag(this);
-								Intent o_INTENT = new Intent(this, ActividadPruebaWs.class);
-								startActivity(o_INTENT);
+								Utilidad.mostrar_mensaje(getApplicationContext(), "Se ha enviado tu código de verificación");
 							}
-						}
-						break;
+							break;
+						case Constant.e_VINCULAR:
+							//Verificar la existencia del JSON y respuesta
+							if( o_DESCRY != null && o_DESCRY.has("RESPUESTA") )
+							{
+								if( o_DESCRY.getString("RESPUESTA").equals("OK") )
+								{
+									Comunicacion.save_flag(this);
+									Intent o_INTENT = new Intent(this, ActividadPruebaWs.class);
+									o_INTENT.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+									startActivity(o_INTENT);
+								}
+							}
+							break;
+					}
+				}
+				catch(Exception o_EX)
+				{
+					o_EX.printStackTrace();
 				}
 			}
-			catch(Exception o_EX)
+			//Al ser negativa la respuesta
+			else
 			{
-				o_EX.printStackTrace();
+				Utilidad.mostrar_mensaje(this, restEventItem.getRespuesta());
 			}
+
 		}
 		o_DIALOGO_PROGRESO.dismiss();
 	}

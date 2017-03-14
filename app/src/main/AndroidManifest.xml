@@ -23,8 +23,10 @@
 		</activity>
 
 		<activity android:name=".Actividades.ActividadLogin"/>
-		<activity android:name=".Actividades.ActividadCuenta"/>
-		<activity android:name=".Actividades.ActividadPruebaWs"/>
+		<activity android:name=".Actividades.ActividadVerificaCuenta"/>
+		<activity android:name=".Actividades.ActividadPruebaWs"
+		          android:windowSoftInputMode="adjustPan"/>
+		<activity android:name=".Actividades.ActividadResultado"/>
 
 		<service android:name=".Servicios.BackendService"/>
 	</application>
