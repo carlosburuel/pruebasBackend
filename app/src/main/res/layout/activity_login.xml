@@ -34,4 +34,10 @@
 		android:layout_marginTop="@dimen/veinte"
 		android:text="@string/iniciar_sesion"/>
 
+	<Button
+		android:id="@+id/btnSinIniciar"
+		style="@style/boton_rojo"
+		android:layout_marginTop="@dimen/veinte"
+		android:text="@string/sin_iniciar_sesion"/>
+
 </LinearLayout>

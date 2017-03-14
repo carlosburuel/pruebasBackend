@@ -85,6 +85,7 @@ public class ActividadElegirEXT
 	@Override
 	public void onClick(View o_VISTA)
 	{
+		Intent o_INTENT;
 		switch( o_VISTA.getId() )
 		{
 			case R.id.rbtnEXT1:
@@ -93,7 +94,7 @@ public class ActividadElegirEXT
 				break;
 			case R.id.btnContinuar:
 				//Enviar a pantalla de login
-				Intent o_INTENT = new Intent(this, ActividadLogin.class);
+				o_INTENT = new Intent(this, ActividadLogin.class);
 				startActivity(o_INTENT);
 				break;
 		}

@@ -1,10 +1,18 @@
 package cburuel.stx.mx.testingws.Actividades;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsMessage;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -37,6 +45,7 @@ public class ActividadVerificaCuenta
 	implements View.OnClickListener
 {
 	private ProgressDialog o_DIALOGO_PROGRESO;
+	String e_ACCION = "android.provider.Telephony.SMS_RECEIVED";
 
 	EditText o_ET_CODIGO;
 	Button o_BTN_ENVIAR;
@@ -63,6 +72,15 @@ public class ActividadVerificaCuenta
 				return false;
 			}
 		});
+		//Verificar permiso de recepcion de mensajes
+		if(ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_SMS) != 0)
+		{
+			ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_SMS}, 1);
+		}
+
+		//Cremos filtro de lectura de intenciones, este caso, mensajes recibidos
+		IntentFilter o_FILTRO = new IntentFilter(e_ACCION);
+		this.registerReceiver(o_RECEPTOR_MENSAJES, o_FILTRO);
 
 		validarVinculacion();
 	}
@@ -166,7 +184,6 @@ public class ActividadVerificaCuenta
 		o_DIALOGO_PROGRESO.dismiss();
 	}
 
-
 	@Override
 	public void onClick(View o_VISTA)
 	{
@@ -178,11 +195,66 @@ public class ActividadVerificaCuenta
 		}
 	}
 
+	//Broadcast para la lectura de mensajes
+	private BroadcastReceiver o_RECEPTOR_MENSAJES = new BroadcastReceiver()
+	{
+		@Override
+		public void onReceive(Context o_CONTEXTO, Intent o_INTENT)
+		{
+
+			//Filtro de accion al llegar mensaje
+			String e_ACCION_LOCAL = o_INTENT.getAction();
+			if( e_ACCION_LOCAL.equals(e_ACCION) )
+			{
+				String e_JWT = Comunicacion.obtenerJWT(o_CONTEXTO);
+				if( !"".equals(e_JWT) )
+				{
+					//Evaluar que exista al menos un login
+					Bundle o_PAQUETE = o_INTENT.getExtras();
+					SmsMessage o_MENSAJE = null;
+
+					Object[] o_PUDS = (Object[]) o_PAQUETE.get("pdus");
+					if( o_PUDS != null )
+					{
+						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.M )
+						{
+							String e_FORMATO = o_PAQUETE.getString("format");
+							o_MENSAJE = SmsMessage.createFromPdu((byte[]) o_PUDS[0], e_FORMATO);
+						}
+						else
+						{
+							o_MENSAJE = SmsMessage.createFromPdu( (byte[]) o_PUDS[0] );
+						}
+					}
+					else
+					{
+						Log.e("MENSAJE", "Sin mensaje");
+					}
+
+					if( o_MENSAJE != null )
+					{
+						//Se toma el cuerpo del mensaje
+						String e_REFERENCIA = o_MENSAJE.getDisplayMessageBody();
+						if(e_REFERENCIA.length() != 6)
+						{
+							return;
+						}
+						o_ET_CODIGO.setText(e_REFERENCIA);
+						vincular();
+					}
+				}
+			}
+		}
+	};
+
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-		EventBus.getDefault().register(this);
+		if( !EventBus.getDefault().isRegistered(this) )
+		{
+			EventBus.getDefault().register(this);
+		}
 	}
 
 	@Override
@@ -190,5 +262,12 @@ public class ActividadVerificaCuenta
 	{
 		EventBus.getDefault().unregister(this);
 		super.onStop();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onDestroy();
+		unregisterReceiver(o_RECEPTOR_MENSAJES);
 	}
 }

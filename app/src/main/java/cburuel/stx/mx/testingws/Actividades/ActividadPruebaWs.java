@@ -59,21 +59,20 @@ public class ActividadPruebaWs
 	{
 		super.onCreate(savedInstanceState);
 		//Ocultar teclado
-		getWindow().setSoftInputMode(
-			WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-		);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		setContentView(R.layout.activity_prueba_ws);
 
 		String e_TITULO = "";
-		if( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT1) )
+		switch(Constant.e_EXT_ELEGIDO)
 		{
-			ACTIONS.iniciarEXT1();
-			e_TITULO = "EXT1";
-		}
-		else if( Constant.e_EXT_ELEGIDO.equals(Constant.e_EXT2) )
-		{
-			ACTIONS.iniciarEXT2();
-			e_TITULO = "EXT2";
+			case Constant.e_EXT1:
+				ACTIONS.iniciarEXT1(this);
+				e_TITULO = "EXT1";
+				break;
+			case Constant.e_EXT2:
+				ACTIONS.iniciarEXT2(this);
+				e_TITULO = "EXT2";
+				break;
 		}
 		//Asignar el titulo
 		setTitle( e_TITULO + " en prueba");
@@ -100,7 +99,12 @@ public class ActividadPruebaWs
 		o_PROGRESO = ProgressDialog.show(this,"", "Probando WS", false);
 		//Encriptacion de datos
 		Map<String, String> m_DATOS_PAYLOAD = new HashMap<>();
-		m_DATOS_PAYLOAD.put("JWT", Comunicacion.obtenerJWT(this));
+		String e_JWT = Comunicacion.obtenerJWT(this);
+		//Se agrega si existe el JWT
+		if(!"".equals(e_JWT))
+		{
+			m_DATOS_PAYLOAD.put("JWT", e_JWT);
+		}
 		//Recorrido
 		for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.size(); e_INDEX++)
 		{

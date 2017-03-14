@@ -56,6 +56,7 @@ public class ActividadLogin
 		o_ET_NIP_CLAVE = (EditText) findViewById(R.id.etNipClave);
 
 		findViewById(R.id.btnIniciarSesion).setOnClickListener(this);
+		findViewById(R.id.btnSinIniciar).setOnClickListener(this);
 
 		o_ET_NIP_CLAVE.setOnEditorActionListener(new TextView.OnEditorActionListener()
 		{
@@ -86,6 +87,11 @@ public class ActividadLogin
 		{
 			case R.id.btnIniciarSesion:
 				validarDatos();
+				break;
+			case R.id.btnSinIniciar:
+				Intent o_INTENT = new Intent(this, ActividadPruebaWs.class);
+				o_INTENT.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(o_INTENT);
 				break;
 		}
 	}
@@ -122,7 +128,6 @@ public class ActividadLogin
 		{
 			o_DATOS_PAYLOAD.put("CONTRASENA", e_NIP_CLAVE);
 		}
-
 
 		JSONObject o_JSON_OBJECT = new JSONObject(o_DATOS_PAYLOAD);
 		String o_JSON_PARSE = Comunicacion.encriptarLlavePublica(o_JSON_OBJECT, this);

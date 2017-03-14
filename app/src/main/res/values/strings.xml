@@ -17,4 +17,6 @@
 	<string name="rutaModulo">Ruta módulo</string>
 	<string name="parametros">Parametros</string>
 	<string name="resultado">Resultado</string>
+	<string name="directas">Pruebas Directas</string>
+	<string name="sin_iniciar_sesion">SIN INICIAR SESIÓN</string>
 </resources>

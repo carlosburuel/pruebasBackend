@@ -1,6 +1,10 @@
 package cburuel.stx.mx.testingws.Utilidades;
 
+import android.content.Context;
+
 import java.util.ArrayList;
+
+import cburuel.stx.mx.testingws.Comunicacion.Comunicacion;
 
 /**
  * @author Carlos Buruel
@@ -11,40 +15,15 @@ public class ACTIONS
 {
 	public static final ArrayList<String> a_WS_EXTS = new ArrayList<>();
 
-	public static void iniciarEXT2()
+	public static void iniciarEXT1(Context o_CONTEXTO)
 	{
 		a_WS_EXTS.clear();
-		//FORMA_PAGO
-		String e_PREFIJO = "FORMA_PAGO.";
-		a_WS_EXTS.add(e_PREFIJO + "ABONO_ESTABLECIMIENTO");
-		a_WS_EXTS.add(e_PREFIJO + "BUSCAR_TOKEN");
-		a_WS_EXTS.add(e_PREFIJO + "CAMBIAR_TOKEN");
-		a_WS_EXTS.add(e_PREFIJO + "CANCELAR_TOKEN");
-		a_WS_EXTS.add(e_PREFIJO + "CERRAR_TOKEN");
-		a_WS_EXTS.add(e_PREFIJO + "CREAR_TOKEN");
-		a_WS_EXTS.add(e_PREFIJO + "OBTENER_CONFIGURACION_REFERENCIA");
-		a_WS_EXTS.add(e_PREFIJO + "OBTENER_DETALLE_TOKEN");
-		a_WS_EXTS.add(e_PREFIJO + "OBTENER_GIFTCARDS_VENTA");
-		a_WS_EXTS.add(e_PREFIJO + "OBTENER_RECOMPENSAS_APLICABLES");
-		a_WS_EXTS.add(e_PREFIJO + "OBTENER_ULTIMOS_TOKENS");
-		//OTROS
-		e_PREFIJO = "OTROS.";
-		a_WS_EXTS.add(e_PREFIJO + "ACTUALIZAR_CONFIGURACION");
-		a_WS_EXTS.add(e_PREFIJO + "CONSULTAR_BANCOS");
-		a_WS_EXTS.add(e_PREFIJO +"GUARDAR_DEPOSITO_BANCARIO");
-		a_WS_EXTS.add(e_PREFIJO +"OBTENER_VENDEDORES");
-		a_WS_EXTS.add(e_PREFIJO +"ULTIMOS_DEPOSITOS_BANCARIOS");
-		//REGISTRO_SESION
-		e_PREFIJO = "REGISTRO_SESION.";
-		a_WS_EXTS.add(e_PREFIJO + "CAMBIAR_CONTRASENA");
-		a_WS_EXTS.add(e_PREFIJO + "CAMBIAR_NIP");
-		a_WS_EXTS.add(e_PREFIJO + "CONSULTAR_PERFIL");
-		a_WS_EXTS.add(e_PREFIJO + "GUARDAR_PERFIL");
-	}
-
-	public static void iniciarEXT1()
-	{
-		a_WS_EXTS.clear();
+		if("".equals(Comunicacion.obtenerJWT(o_CONTEXTO)))
+		{
+			a_WS_EXTS.add("REGISTRO_SESION.REGISTRAR_CUENTA");
+			a_WS_EXTS.add("REGISTRO_SESION.VALIDAR_TELEFONO");
+			return;
+		}
 		//REGISTRO_SESION
 		String e_PREFIJO = "REGISTRO_SESION.";
 		a_WS_EXTS.add(e_PREFIJO + "OBTENER_PERFIL");
@@ -75,5 +54,51 @@ public class ACTIONS
 		a_WS_EXTS.add(e_PREFIJO + "OBTENER_CAMPANAS");
 		a_WS_EXTS.add(e_PREFIJO + "AGREGAR_LOVEMARK");
 		a_WS_EXTS.add(e_PREFIJO + "ELIMINAR_LOVEMARK");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_CAMPANA");
+		a_WS_EXTS.add(e_PREFIJO + "BUSCAR_LOVEMARKS");
+		//OTROS
+		e_PREFIJO = "OTROS.";
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_ESTADO_DE_CUENTA");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_SALDO");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_CODIGO_INVITACION");
+		a_WS_EXTS.add(e_PREFIJO + "ACTUALIZAR_GEOPOSICION");
+		a_WS_EXTS.add(e_PREFIJO + "ABONO_TOKENCASH_TARJETA");
+	}
+
+	public static void iniciarEXT2(Context o_CONTEXTO)
+	{
+		a_WS_EXTS.clear();
+		if("".equals(Comunicacion.obtenerJWT(o_CONTEXTO)))
+		{
+			a_WS_EXTS.add("REGISTRO_SESION.REGISTRAR_CUENTA");
+			a_WS_EXTS.add("REGISTRO_SESION.VALIDAR_TELEFONO");
+			return;
+		}
+		//FORMA_PAGO
+		String e_PREFIJO = "FORMA_PAGO.";
+		a_WS_EXTS.add(e_PREFIJO + "ABONO_ESTABLECIMIENTO");
+		a_WS_EXTS.add(e_PREFIJO + "BUSCAR_TOKEN");
+		a_WS_EXTS.add(e_PREFIJO + "CAMBIAR_TOKEN");
+		a_WS_EXTS.add(e_PREFIJO + "CANCELAR_TOKEN");
+		a_WS_EXTS.add(e_PREFIJO + "CERRAR_TOKEN");
+		a_WS_EXTS.add(e_PREFIJO + "CREAR_TOKEN");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_CONFIGURACION_REFERENCIA");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_DETALLE_TOKEN");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_GIFTCARDS_VENTA");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_RECOMPENSAS_APLICABLES");
+		a_WS_EXTS.add(e_PREFIJO + "OBTENER_ULTIMOS_TOKENS");
+		//OTROS
+		e_PREFIJO = "OTROS.";
+		a_WS_EXTS.add(e_PREFIJO + "ACTUALIZAR_CONFIGURACION");
+		a_WS_EXTS.add(e_PREFIJO + "CONSULTAR_BANCOS");
+		a_WS_EXTS.add(e_PREFIJO +"GUARDAR_DEPOSITO_BANCARIO");
+		a_WS_EXTS.add(e_PREFIJO +"OBTENER_VENDEDORES");
+		a_WS_EXTS.add(e_PREFIJO +"ULTIMOS_DEPOSITOS_BANCARIOS");
+		//REGISTRO_SESION
+		e_PREFIJO = "REGISTRO_SESION.";
+		a_WS_EXTS.add(e_PREFIJO + "CAMBIAR_CONTRASENA");
+		a_WS_EXTS.add(e_PREFIJO + "CAMBIAR_NIP");
+		a_WS_EXTS.add(e_PREFIJO + "CONSULTAR_PERFIL");
+		a_WS_EXTS.add(e_PREFIJO + "GUARDAR_PERFIL");
 	}
 }
