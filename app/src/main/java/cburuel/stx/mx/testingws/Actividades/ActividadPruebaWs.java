@@ -1,14 +1,23 @@
 package cburuel.stx.mx.testingws.Actividades;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +31,15 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +49,7 @@ import cburuel.stx.mx.testingws.Modelos.Parametros;
 import cburuel.stx.mx.testingws.R;
 import cburuel.stx.mx.testingws.Utilidades.ACTIONS;
 import cburuel.stx.mx.testingws.Utilidades.Constant;
+import cburuel.stx.mx.testingws.Utilidades.Utilidad;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -46,7 +61,7 @@ public class ActividadPruebaWs
 	extends AppCompatActivity
 	implements View.OnClickListener
 {
-	ImageView o_IV_AGREGAR;
+	ImageView o_IV_AGREGAR, o_IV_JSON;
 	Button o_BTN_ENVIAR;
 	Spinner o_SP_ACCIONES;
 	RecyclerView o_RV_PARAMETROS;
@@ -79,6 +94,7 @@ public class ActividadPruebaWs
 
 		o_SP_ACCIONES = (Spinner) findViewById(R.id.spAcciones);
 		o_IV_AGREGAR = (ImageView) findViewById(R.id.btnAgregar);
+		o_IV_JSON = (ImageView) findViewById(R.id.btnJSON);
 		o_BTN_ENVIAR = (Button) findViewById(R.id.btnConsultar);
 		o_RV_PARAMETROS = (RecyclerView) findViewById(R.id.rvParametros);
 
@@ -92,6 +108,7 @@ public class ActividadPruebaWs
 
 		o_IV_AGREGAR.setOnClickListener(this);
 		o_BTN_ENVIAR.setOnClickListener(this);
+		o_IV_JSON.setOnClickListener(this);
 	}
 
 	private void hacerLLamado()
@@ -182,7 +199,186 @@ public class ActividadPruebaWs
 			case R.id.btnConsultar:
 				hacerLLamado();
 				break;
+			case R.id.btnJSON:
+				verSelectorArchivo();
+				break;
 		}
+	}
+
+	final int REQUEST_EXTERNAL_STORAGE = 66;
+	String[] PERMISSIONS_STORAGE =
+		{
+			Manifest.permission.READ_EXTERNAL_STORAGE,
+		};
+	/**
+	 * Procesar json partiendo de un archivo
+	 */
+	private void procesarJSON(String e_PATH)
+	{
+		StringBuilder stringBuilder = new StringBuilder();
+		File o_FILE = new File(e_PATH);
+		try
+		{
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(o_FILE));
+			String e_LINEA;
+			//Verificamos que no sea vacio y si es posible guardamos la linea leida
+			while( (e_LINEA = bufferedReader.readLine() ) != null)
+			{
+				stringBuilder.append(e_LINEA);
+				stringBuilder.append('\n');
+			}
+			bufferedReader.close();
+			//Creacion de JSON y decodeo del mismo
+			JSONObject o_JSON = new JSONObject(stringBuilder.toString());
+			if( o_JSON.has("ACTION") && o_JSON.has("PARAMETROS") && o_JSON.has("RESULTADO") )
+			{
+				//Extracccion de valores escalares
+				String e_ACCION = o_JSON.getString("ACTION");
+				String e_RESULTADO = o_JSON.getString("RESULTADO");
+				//Extraccion de arreglo de parametros
+				JSONArray a_PARAMETROS = new JSONArray(o_JSON.getString("PARAMETROS"));
+				if( a_PARAMETROS.length() == 0 )
+				{
+					Utilidad.mostrar_mensaje(this, "JSON no válido");
+					return;
+				}
+				this.a_PARAMETROS.clear();
+				for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.length(); e_INDEX++)
+				{
+					JSONObject o_JSON_ITEM = a_PARAMETROS.getJSONObject(e_INDEX);
+					//Extraccion
+					Iterator o_ITERADOR = o_JSON_ITEM.keys();
+					while( o_ITERADOR.hasNext() )
+					{
+						String e_LLAVE = (String) o_ITERADOR.next();
+						String e_VALOR = o_JSON_ITEM.getString(e_LLAVE);
+
+						Parametros o_PARAMETRO = new Parametros("Llave", "Valor");
+						o_PARAMETRO.setE_TEXTO_1(e_LLAVE);
+						o_PARAMETRO.setE_TEXTO_2(e_VALOR);
+						this.a_PARAMETROS.add(o_PARAMETRO);
+					}
+				}
+				o_ADAPTADOR.notifyDataSetChanged();
+				//elegir ACTION en listado
+				int e_INDEX = ACTIONS.a_WS_EXTS.indexOf(e_ACCION);
+				if( e_INDEX >= 0 )
+				{
+					o_SP_ACCIONES.setSelection(e_INDEX);
+				}
+				else
+				{
+					Utilidad.mostrar_mensaje(this, "JSON no válido");
+				}
+				return;
+			}
+			Utilidad.mostrar_mensaje(this, "JSON no válido");
+		}
+		catch(Exception o_EX)
+		{
+			o_EX.printStackTrace();
+			Log.e("ERROR", o_EX.getMessage());
+		}
+	}
+
+	private void verSelectorArchivo()
+	{
+		if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != 0)
+		{
+			ActivityCompat.requestPermissions(
+				this,
+				PERMISSIONS_STORAGE,
+				REQUEST_EXTERNAL_STORAGE
+			);
+			return;
+		}
+
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.setType("text/plain");
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+		try
+		{
+			startActivityForResult(
+				Intent.createChooser(intent, "Selecciona un archivo txt"), 77
+			);
+		}
+		catch(Exception o_EX)
+		{
+			Utilidad.mostrar_mensaje(this, "Por favor instale un admin de archivos");
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int e_RESPUESTA, @NonNull String[] a_PERMISOS, @NonNull int[] a_RESULTADO)
+	{
+		switch( e_RESPUESTA )
+		{
+			case REQUEST_EXTERNAL_STORAGE:
+				//existencia de permisos aceptados
+				if( a_PERMISOS.length > 0 )
+				{
+					for ( int e_permiso : a_RESULTADO )
+					{
+						//es diferente a permisos aceptado
+						if( e_permiso != PackageManager.PERMISSION_GRANTED)
+						{
+							Utilidad.mostrar_mensaje(this, "No es posible la lectura de archivos");
+							return;
+						}
+					}
+					verSelectorArchivo();
+				}
+				break;
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int e_CODIGO_PETICION, int e_CODIGO_RESULTADO, Intent o_INFORMACION)
+	{
+		switch(e_CODIGO_PETICION)
+		{
+			case 77:
+				if(e_CODIGO_RESULTADO == RESULT_OK)
+				{
+					Uri o_URI = o_INFORMACION.getData();
+					String e_PATH = getPath(this, o_URI);
+					if(e_PATH != null && !"".equals(e_PATH))
+					{
+						procesarJSON(e_PATH);
+					}
+					else
+					{
+						Utilidad.mostrar_mensaje(this, "Error al encontrar el archivo");
+					}
+				}
+				break;
+		}
+	}
+
+	public static String getPath(Context context, Uri uri)
+	{
+		if ("content".equalsIgnoreCase(uri.getScheme())) {
+			String[] projection = { "_data" };
+			Cursor o_CURSOR;
+
+			try
+			{
+				o_CURSOR = context.getContentResolver().query(uri, projection, null, null, null);
+				int column_index = o_CURSOR.getColumnIndexOrThrow("_data");
+				if (o_CURSOR.moveToFirst()) {
+					return o_CURSOR.getString(column_index);
+				}
+			}
+			catch(Exception e)
+			{
+			}
+		}
+		else if ("file".equalsIgnoreCase(uri.getScheme())) {
+			return uri.getPath();
+		}
+
+		return null;
 	}
 
 	@Override

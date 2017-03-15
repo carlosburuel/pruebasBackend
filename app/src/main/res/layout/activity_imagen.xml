@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@android:color/white">
+	<LinearLayout
+	  android:orientation="vertical"
+	  android:layout_width="match_parent"
+	  android:layout_height="wrap_content"
+		android:padding="@dimen/veinte">
+
+		<TextView
+			style="@style/etiquetas_verdes"
+			android:text="@string/path_imagen"/>
+		<EditText
+			android:id="@+id/etPath"
+			style="@style/caja_verde"
+			android:hint="@string/path_imagen"
+			android:inputType="textNoSuggestions"
+			android:imeOptions="actionDone"/>
+
+		<Button
+			android:id="@+id/btnBuscarImagen"
+			style="@style/boton_rojo"
+			android:layout_marginTop="@dimen/veinte"
+			android:text="@string/buscar_imagen"/>
+
+		<ImageView
+			android:id="@+id/ivImagen"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_marginTop="@dimen/veinte"
+			android:src="@drawable/ic_camera"
+			android:scaleType="centerInside"/>
+
+	</LinearLayout>
+</ScrollView>

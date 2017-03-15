@@ -12,6 +12,31 @@
 			android:orientation="vertical"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:layout_marginTop="@dimen/veinte"
+				android:layout_marginLeft="@dimen/veinte"
+				android:layout_marginRight="@dimen/veinte"
+				android:weightSum="2">
+				<TextView
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:textSize="20sp"
+					android:textColor="@android:color/black"
+					android:text="@string/rutaModulo"/>
+				<ImageView
+					android:id="@+id/btnJSON"
+					android:layout_width="0dp"
+					android:layout_height="match_parent"
+					android:layout_weight="1"
+					android:scaleType="fitEnd"
+					android:src="@drawable/ic_json_file"/>
+			</LinearLayout>
+
 			<TextView
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"

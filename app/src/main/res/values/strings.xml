@@ -19,4 +19,6 @@
 	<string name="resultado">Resultado</string>
 	<string name="directas">Pruebas Directas</string>
 	<string name="sin_iniciar_sesion">SIN INICIAR SESIÓN</string>
+	<string name="buscar_imagen">BUSCAR IMAGEN</string>
+	<string name="path_imagen">Path de imagen</string>
 </resources>

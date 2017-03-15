@@ -33,7 +33,6 @@ public class AdaptadorParametros
 	public CustomViewHolder onCreateViewHolder(ViewGroup o_PADRE, int e_INT)
 	{
 		View o_VISTA = LayoutInflater.from(o_PADRE.getContext())
-//			.inflate(R.layout.elemento_parametro, o_PADRE, false);
 			.inflate(R.layout.elemento_parametro, null);
 		return new CustomViewHolder(o_VISTA);
 	}
@@ -44,6 +43,9 @@ public class AdaptadorParametros
 		final Parametros o_PARAMETRO = a_PARAMETROS.get(e_POSICION);
 		o_HOLDER.o_ET_LLAVE.setHint( o_PARAMETRO.getE_HINT_1() );
 		o_HOLDER.o_ET_VALOR.setHint(o_PARAMETRO.getE_HINT_2() );
+
+		o_HOLDER.o_ET_LLAVE.setText( o_PARAMETRO.getE_TEXTO_1() );
+		o_HOLDER.o_ET_VALOR.setText(o_PARAMETRO.getE_TEXTO_2() );
 
 		//Eventos de lectura al escribir
 		o_HOLDER.o_ET_LLAVE.addTextChangedListener(new TextWatcher()

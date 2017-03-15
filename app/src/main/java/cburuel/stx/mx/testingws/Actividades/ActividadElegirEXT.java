@@ -26,6 +26,10 @@ public class ActividadElegirEXT
 	RadioButton o_RBTN_EXT2;
 	Button o_BTN_CONTINUAR;
 
+	/**
+	 * Creacion y carga de elementos de la Actividad
+	 * @param savedInstanceState Paquete de creacion
+	 */
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
@@ -49,6 +53,9 @@ public class ActividadElegirEXT
 		elegirApertura();
 	}
 
+	/**
+	 * Revisamos instancia donde esta firmada nuestra aplicación
+	 */
 	private void revisarPersistenciaEXT()
 	{
 		String e_EXT_PERSISTENTE = Comunicacion.obtenerContenidoArchivo(this, "codigo.txt");
@@ -62,6 +69,9 @@ public class ActividadElegirEXT
 		}
 	}
 
+	/**
+	 * Desiciones para la apertura de la primera actividad a mostrar
+	 */
 	private void elegirApertura()
 	{
 		Class o_CLASE = null;
@@ -82,6 +92,10 @@ public class ActividadElegirEXT
 		}
 	}
 
+	/**
+	 * Sobre escritura del método clic
+	 * @param o_VISTA Vista en contexto
+	 */
 	@Override
 	public void onClick(View o_VISTA)
 	{
@@ -118,4 +132,6 @@ public class ActividadElegirEXT
 			Constant.e_EXT_ELEGIDO = Constant.e_EXT2;
 		}
 	}
+
+
 }

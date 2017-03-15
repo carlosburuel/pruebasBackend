@@ -57,6 +57,7 @@ public class ActividadLogin
 
 		findViewById(R.id.btnIniciarSesion).setOnClickListener(this);
 		findViewById(R.id.btnSinIniciar).setOnClickListener(this);
+		findViewById(R.id.btnBuscarImagen).setOnClickListener(this);
 
 		o_ET_NIP_CLAVE.setOnEditorActionListener(new TextView.OnEditorActionListener()
 		{
@@ -83,14 +84,19 @@ public class ActividadLogin
 	@Override
 	public void onClick(View o_VISTA)
 	{
+		Intent o_INTENT;
 		switch(o_VISTA.getId())
 		{
 			case R.id.btnIniciarSesion:
 				validarDatos();
 				break;
 			case R.id.btnSinIniciar:
-				Intent o_INTENT = new Intent(this, ActividadPruebaWs.class);
+				o_INTENT = new Intent(this, ActividadPruebaWs.class);
 				o_INTENT.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+				startActivity(o_INTENT);
+				break;
+			case R.id.btnBuscarImagen:
+				o_INTENT = new Intent(this, AcvitidadImagen.class);
 				startActivity(o_INTENT);
 				break;
 		}
