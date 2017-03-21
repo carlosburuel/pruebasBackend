@@ -183,12 +183,19 @@ public class ActividadLogin
 								//Camino de EXT2
 								else
 								{
-									JSONObject o_RESPUESTA = new JSONObject( o_DESCRY.getString("RESPUESTA") );
-									if( !Comunicacion.salvar_jwt(o_RESPUESTA.getString("JWT"), this) )
+									//recoleccion antigua de jwt
+									if( !Comunicacion.salvar_jwt(o_DESCRY.getString("RESPUESTA"), this) )
 									{
 										Utilidad.mostrar_mensaje(this, R.string.error_escritura_jwt);
 										return;
 									}
+
+//									JSONObject o_RESPUESTA = new JSONObject( o_DESCRY.getString("RESPUESTA") );
+//									if( !Comunicacion.salvar_jwt(o_RESPUESTA.getString("JWT"), this) )
+//									{
+//										Utilidad.mostrar_mensaje(this, R.string.error_escritura_jwt);
+//										return;
+//									}
 								}
 								Intent o_INTENT = new Intent(this, ActividadVerificaCuenta.class);
 								startActivity(o_INTENT);

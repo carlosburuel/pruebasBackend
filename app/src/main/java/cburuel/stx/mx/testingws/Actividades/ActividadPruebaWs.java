@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,16 +16,19 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -43,7 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import cburuel.stx.mx.testingws.Adaptador.AdaptadorParametros;
 import cburuel.stx.mx.testingws.Comunicacion.Comunicacion;
 import cburuel.stx.mx.testingws.Modelos.Parametros;
 import cburuel.stx.mx.testingws.R;
@@ -64,10 +67,15 @@ public class ActividadPruebaWs
 	ImageView o_IV_AGREGAR, o_IV_JSON;
 	Button o_BTN_ENVIAR;
 	Spinner o_SP_ACCIONES;
-	RecyclerView o_RV_PARAMETROS;
-	AdaptadorParametros o_ADAPTADOR;
+	LinearLayout o_LAYOUT;
 	ProgressDialog o_PROGRESO;
 	List<Parametros> a_PARAMETROS = new ArrayList<>();
+
+	final int REQUEST_EXTERNAL_STORAGE = 66;
+	String[] PERMISSIONS_STORAGE =
+		{
+			Manifest.permission.READ_EXTERNAL_STORAGE,
+		};
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
@@ -96,11 +104,8 @@ public class ActividadPruebaWs
 		o_IV_AGREGAR = (ImageView) findViewById(R.id.btnAgregar);
 		o_IV_JSON = (ImageView) findViewById(R.id.btnJSON);
 		o_BTN_ENVIAR = (Button) findViewById(R.id.btnConsultar);
-		o_RV_PARAMETROS = (RecyclerView) findViewById(R.id.rvParametros);
 
-		o_ADAPTADOR = new AdaptadorParametros(a_PARAMETROS);
-		o_RV_PARAMETROS.setLayoutManager(new LinearLayoutManager(this));
-		o_RV_PARAMETROS.setAdapter(o_ADAPTADOR);
+		o_LAYOUT = (LinearLayout) findViewById(R.id.llParametros);
 
 		ArrayAdapter<String> o_ADAPTADOR =
 			new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ACTIONS.a_WS_EXTS);
@@ -122,11 +127,16 @@ public class ActividadPruebaWs
 		{
 			m_DATOS_PAYLOAD.put("JWT", e_JWT);
 		}
-		//Recorrido
-		for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.size(); e_INDEX++)
+		//Recorrido de contenido en hijos de layout
+		for(int e_INDEX = 0; e_INDEX < o_LAYOUT.getChildCount(); e_INDEX++)
 		{
-			Parametros o_PARAMETRO = a_PARAMETROS.get(e_INDEX);
-			m_DATOS_PAYLOAD.put(o_PARAMETRO.getE_TEXTO_1(), o_PARAMETRO.getE_TEXTO_2());
+			ViewGroup a_GRUPO_HIJOS = (ViewGroup) o_LAYOUT.getChildAt(e_INDEX);
+			EditText o_ET_LLAVE = (EditText) a_GRUPO_HIJOS.getChildAt(0);
+			EditText o_ET_VALOR = (EditText) a_GRUPO_HIJOS.getChildAt(1);
+			String e_LLAVE = o_ET_LLAVE.getText().toString();
+			String e_VALOR = o_ET_VALOR.getText().toString();
+
+			m_DATOS_PAYLOAD.put(e_LLAVE, e_VALOR);
 		}
 
 		JSONObject o_JSON_OBJECT = new JSONObject(m_DATOS_PAYLOAD);
@@ -193,8 +203,9 @@ public class ActividadPruebaWs
 		switch( o_VISTA.getId() )
 		{
 			case R.id.btnAgregar:
-				a_PARAMETROS.add( new Parametros("Llave", "Valor") );
-				o_ADAPTADOR.notifyDataSetChanged();
+				agregarFila("", "");
+//				a_PARAMETROS.add( new Parametros("Llave", "Valor") );
+//				o_ADAPTADOR.notifyDataSetChanged();
 				break;
 			case R.id.btnConsultar:
 				hacerLLamado();
@@ -205,11 +216,93 @@ public class ActividadPruebaWs
 		}
 	}
 
-	final int REQUEST_EXTERNAL_STORAGE = 66;
-	String[] PERMISSIONS_STORAGE =
+	/**
+	 * agrega la fila para el ingreso de parametros en el envio de post
+	 */
+	private void agregarFila(String e_LLAVE, String e_VALOR)
+	{
+		//region Creacion de LinearLayout horizontal
+		final LinearLayout o_LAYOUT_HIJO = new LinearLayout(this);
+		o_LAYOUT_HIJO.setOrientation(LinearLayout.HORIZONTAL);
+		o_LAYOUT_HIJO.setWeightSum(5f);
+		LinearLayout.LayoutParams o_PARAMETROS = new LinearLayout.LayoutParams(
+			LinearLayout.LayoutParams.MATCH_PARENT,
+			LinearLayout.LayoutParams.WRAP_CONTENT
+		);
+		o_LAYOUT_HIJO.setLayoutParams(o_PARAMETROS);
+
+		//endregion
+		Resources o_RECURSO = getResources();
+		int e_PIXELES = (int)TypedValue.applyDimension(
+			TypedValue.COMPLEX_UNIT_DIP,
+			5,
+			o_RECURSO.getDisplayMetrics()
+		);
+		//region primer caja
+		EditText o_VISTA = new EditText(this);
+		LinearLayout.LayoutParams o_PARAMETRO = new LinearLayout.LayoutParams
+			(
+				0,LinearLayout.LayoutParams.MATCH_PARENT, 2f
+			);
+		o_PARAMETRO.rightMargin = e_PIXELES;
+		o_VISTA.setLayoutParams(o_PARAMETRO);
+		o_VISTA.setBackground(ContextCompat.getDrawable(this, R.drawable.borde_verde));
+		o_VISTA.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+		o_VISTA.setPadding(0, 0, 0, 0);
+		o_VISTA.setHint("Llave");
+		o_VISTA.setInputType(
+			InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS| InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+		);
+		if(!"".equals(e_LLAVE))
 		{
-			Manifest.permission.READ_EXTERNAL_STORAGE,
-		};
+			o_VISTA.setText(e_LLAVE);
+		}
+		o_LAYOUT_HIJO.addView(o_VISTA);
+		//endregion
+		//region segunda caja
+		o_VISTA = new EditText(this);
+		o_PARAMETRO = new LinearLayout.LayoutParams
+			(
+				0,LinearLayout.LayoutParams.MATCH_PARENT, 2f
+			);
+		o_PARAMETRO.leftMargin = e_PIXELES;
+		o_VISTA.setLayoutParams(o_PARAMETRO);
+		o_VISTA.setBackground(ContextCompat.getDrawable(this, R.drawable.borde_verde));
+		o_VISTA.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+		o_VISTA.setPadding(0, 0, 0, 0);
+		o_VISTA.setHint("Valor");
+		o_VISTA.setInputType(
+			InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS| InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+		);
+		if(!"".equals(e_VALOR))
+		{
+			o_VISTA.setText(e_VALOR);
+		}
+		o_LAYOUT_HIJO.addView(o_VISTA);
+		//endregion
+		ImageView o_IV = new ImageView(this);
+		o_IV.setLayoutParams(new LinearLayout.LayoutParams(
+			0,
+			LinearLayout.LayoutParams.MATCH_PARENT, 1f)
+		);
+		o_IV.setScaleType(ImageView.ScaleType.CENTER);
+		o_IV.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_remove));
+		//Evento click para remover padre
+		o_IV.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View o_VISTA)
+			{
+				//Remover vista hijo del contenedor
+				o_LAYOUT.removeView(o_LAYOUT_HIJO);
+			}
+		});
+		o_LAYOUT_HIJO.addView(o_IV);
+
+		o_LAYOUT.addView(o_LAYOUT_HIJO);
+
+	}
+
 	/**
 	 * Procesar json partiendo de un archivo
 	 */
@@ -234,7 +327,7 @@ public class ActividadPruebaWs
 			{
 				//Extracccion de valores escalares
 				String e_ACCION = o_JSON.getString("ACTION");
-				String e_RESULTADO = o_JSON.getString("RESULTADO");
+//				String e_RESULTADO = o_JSON.getString("RESULTADO");
 				//Extraccion de arreglo de parametros
 				JSONArray a_PARAMETROS = new JSONArray(o_JSON.getString("PARAMETROS"));
 				if( a_PARAMETROS.length() == 0 )
@@ -256,10 +349,10 @@ public class ActividadPruebaWs
 						Parametros o_PARAMETRO = new Parametros("Llave", "Valor");
 						o_PARAMETRO.setE_TEXTO_1(e_LLAVE);
 						o_PARAMETRO.setE_TEXTO_2(e_VALOR);
-						this.a_PARAMETROS.add(o_PARAMETRO);
+						//Agregar fila
+						agregarFila(e_LLAVE, e_VALOR);
 					}
 				}
-				o_ADAPTADOR.notifyDataSetChanged();
 				//elegir ACTION en listado
 				int e_INDEX = ACTIONS.a_WS_EXTS.indexOf(e_ACCION);
 				if( e_INDEX >= 0 )
@@ -370,8 +463,9 @@ public class ActividadPruebaWs
 					return o_CURSOR.getString(column_index);
 				}
 			}
-			catch(Exception e)
+			catch(Exception o_EX)
 			{
+				o_EX.printStackTrace();
 			}
 		}
 		else if ("file".equalsIgnoreCase(uri.getScheme())) {

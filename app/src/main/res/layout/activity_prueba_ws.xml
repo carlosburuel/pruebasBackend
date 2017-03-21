@@ -74,12 +74,12 @@
 					android:src="@drawable/ic_plus"/>
 			</LinearLayout>
 
-			<android.support.v7.widget.RecyclerView
-				android:id="@+id/rvParametros"
+			<LinearLayout
+				android:id="@+id/llParametros"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:scrollbars="vertical"
-				tools:listitem="@layout/elemento_parametro"/>
+				android:layout_marginLeft="@dimen/veinte"
+				android:orientation="vertical"/>
 
 			<Button
 				android:id="@+id/btnConsultar"

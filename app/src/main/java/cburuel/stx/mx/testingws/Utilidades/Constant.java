@@ -15,9 +15,9 @@ public class Constant
 	public static final int NOT_FOUND = 404;
 	public static final int INTERNAL_SERVER_ERROR = 500;
 
-	//http://narvi.klayware.com/index.php?ACTION=PYXTER_TOKENCASH_EXT1_EXT:C5A.EXT.
 	//Rutas principales
 	public static final String e_URL_BASE = "http://narvi.klayware.com/";
+//	public static final String e_URL_BASE = "http://192.168.1.34:90/";
 	public static final String e_URL_PATH = "index.php?ACTION=";
 	//Variantes de EXT's
 	public static final String e_EXT1 = "PYXTER_TOKENCASH_EXT1_EXT:C5A.EXT.";
