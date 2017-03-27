@@ -120,7 +120,7 @@ public class ActividadPruebaWs
 	private void hacerLLamado()
 	{
 		//Reiniciar archivo bitacora
-		Utilidad.escribirBitacora(this, "Inicio de log: \n", false);
+		Utilidad.escribirBitacora(this, "Inicio de log: ", false);
 		o_PROGRESO = ProgressDialog.show(this,"", "Probando WS", false);
 		//Encriptacion de datos
 		final Map<String, String> m_DATOS_PAYLOAD = new HashMap<>();
@@ -132,170 +132,76 @@ public class ActividadPruebaWs
 		}
 
 		//Iteracion y cardado de contenido de archivo
-		if( a_DATOS_PRUEBA == null )
+		if( a_DATOS_PRUEBA != null &&a_DATOS_PRUEBA.length() != 0 )
 		{
-			Utilidad.mostrar_mensaje(this, "No se encontro información");
-			o_PROGRESO.dismiss();
-			return;
-		}
-		for( int e_INDEX_JSON = 0; e_INDEX_JSON < a_DATOS_PRUEBA.length(); e_INDEX_JSON++ )
-		{
-			try
+			for( int e_INDEX_JSON = 0; e_INDEX_JSON < a_DATOS_PRUEBA.length(); e_INDEX_JSON++ )
 			{
-				//Creacion de JSON y decodeo del mismo
-				JSONObject o_JSON = a_DATOS_PRUEBA.getJSONObject(e_INDEX_JSON);
-				if( o_JSON.has("ACTION") && o_JSON.has("PARAMETROS") && o_JSON.has("RESULTADO") )
+				try
 				{
-					//Extracccion de valores escalares
-					String e_ACCION = o_JSON.getString("ACTION");
-					//Resultado esperado por cada llamada
-					final String e_RESULTADO_ESPERADO = o_JSON.getString("RESULTADO");
-					//Extraccion de arreglo de parametros
-					JSONArray a_PARAMETROS = new JSONArray(o_JSON.getString("PARAMETROS"));
-					if( a_PARAMETROS.length() == 0 )
+					//Creacion de JSON y decodeo del mismo
+					JSONObject o_JSON = a_DATOS_PRUEBA.getJSONObject(e_INDEX_JSON);
+					if( o_JSON.has("ACTION") && o_JSON.has("PARAMETROS") && o_JSON.has("RESULTADO") )
 					{
-						Utilidad.mostrar_mensaje(this, "JSON no válido");
-						return;
-					}
-					o_LAYOUT.removeAllViews();
-					for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.length(); e_INDEX++)
-					{
-						JSONObject o_JSON_ITEM = a_PARAMETROS.getJSONObject(e_INDEX);
-						//Extraccion
-						Iterator o_ITERADOR = o_JSON_ITEM.keys();
-						while( o_ITERADOR.hasNext() )
+						//Extracccion de valores escalares
+						String e_ACCION = o_JSON.getString("ACTION");
+						//Resultado esperado por cada llamada
+						final String e_RESULTADO_ESPERADO = o_JSON.getString("RESULTADO");
+						//Extraccion de arreglo de parametros
+						JSONArray a_PARAMETROS = new JSONArray(o_JSON.getString("PARAMETROS"));
+						if( a_PARAMETROS.length() == 0 )
 						{
-							String e_LLAVE = (String) o_ITERADOR.next();
-							String e_VALOR = o_JSON_ITEM.getString(e_LLAVE);
-
-							Parametros o_PARAMETRO = new Parametros("Llave", "Valor");
-							o_PARAMETRO.setE_TEXTO_1(e_LLAVE);
-							o_PARAMETRO.setE_TEXTO_2(e_VALOR);
-							//Agregar fila
-							agregarFila(e_LLAVE, e_VALOR);
+							Utilidad.mostrar_mensaje(this, "JSON no válido");
+							return;
 						}
-					}
-					//elegir ACTION en listado
-					int e_INDEX = ACTIONS.a_WS_EXTS.indexOf(e_ACCION);
-					if( e_INDEX >= 0 )
-					{
-						o_SP_ACCIONES.setSelection(e_INDEX);
-
-						//region Recorrido de contenido en hijos de layout
-						for(int e_INDEX2 = 0; e_INDEX2 < o_LAYOUT.getChildCount(); e_INDEX2++)
+						o_LAYOUT.removeAllViews();
+						for(int e_INDEX = 0; e_INDEX < a_PARAMETROS.length(); e_INDEX++)
 						{
-							ViewGroup a_GRUPO_HIJOS = (ViewGroup) o_LAYOUT.getChildAt(e_INDEX2);
-							EditText o_ET_LLAVE = (EditText) a_GRUPO_HIJOS.getChildAt(0);
-							EditText o_ET_VALOR = (EditText) a_GRUPO_HIJOS.getChildAt(1);
-							String e_LLAVE = o_ET_LLAVE.getText().toString();
-							String e_VALOR = o_ET_VALOR.getText().toString();
-
-							m_DATOS_PAYLOAD.put(e_LLAVE, e_VALOR);
-						}
-						//endregion
-
-						JSONObject o_JSON_OBJECT = new JSONObject(m_DATOS_PAYLOAD);
-						String o_JSON_PARSE = Comunicacion.encriptarLlavePublica(o_JSON_OBJECT, this);
-						//Elementos de envio
-						RequestParams o_PARAMETROS = new RequestParams();
-						o_PARAMETROS.put("FINGERPRINT", Comunicacion.crearFingerprint(this));
-						o_PARAMETROS.put("PAYLOAD", o_JSON_PARSE);
-
-						final String e_RUTA_MODULO = o_SP_ACCIONES.getSelectedItem().toString();
-						AsyncHttpClient o_CLIENTE = new AsyncHttpClient();
-						o_CLIENTE.post(
-							Constant.e_URL_BASE + Constant.e_URL_PATH + Constant.e_EXT_ELEGIDO + e_RUTA_MODULO,
-							o_PARAMETROS, new JsonHttpResponseHandler()
+							JSONObject o_JSON_ITEM = a_PARAMETROS.getJSONObject(e_INDEX);
+							//Extraccion
+							Iterator o_ITERADOR = o_JSON_ITEM.keys();
+							while( o_ITERADOR.hasNext() )
 							{
-								@Override
-								public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject o_RESPUESTA)
-								{
-									o_PROGRESO.dismiss();
-									//region Reporte de datos enviados y recibidos
-									Utilidad.escribirBitacora(getBaseContext(), "Ruta modulo: " + e_RUTA_MODULO + "\n\n", true);
-									Utilidad.escribirBitacora(getBaseContext(), "Datos enviados: " + m_DATOS_PAYLOAD.toString() + "\n", true);
-									Utilidad.escribirBitacora(getBaseContext(), "En espera: " + e_RESULTADO_ESPERADO + "\n", true);
-									//endregion
-									Utilidad.escribirBitacora(getBaseContext(), "Respuesta no procesada \n", true);
-								}
+								String e_LLAVE = (String) o_ITERADOR.next();
+								String e_VALOR = o_JSON_ITEM.getString(e_LLAVE);
 
-								@Override
-								public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
-								{
-									o_PROGRESO.dismiss();
-									//region Reporte de datos enviados y recibidos
-									Utilidad.escribirBitacora(getBaseContext(), "Ruta modulo: " + e_RUTA_MODULO + "\n\n", true);
-									Utilidad.escribirBitacora(getBaseContext(), "Datos enviados: " + m_DATOS_PAYLOAD.toString() + "\n", true);
-									Utilidad.escribirBitacora(getBaseContext(), "En espera: " + e_RESULTADO_ESPERADO + "\n", true);
-									//endregion
-									Utilidad.escribirBitacora(getBaseContext(), "Respuesta no procesada \n", true);
-								}
-
-								@Override
-								public void onSuccess(int statusCode, Header[] a_CABECERA, JSONObject o_RESPUESTA)
-								{
-									o_PROGRESO.dismiss();
-									String e_INFORMACION = "";
-									try
-									{
-										String e_RESPUESTA = o_RESPUESTA.getString("RETURN");
-										if( o_RESPUESTA.getBoolean("success") )
-										{
-											JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(e_RESPUESTA, ActividadPruebaWs.this);
-
-											if( o_DESCRY != null )
-											{
-												e_INFORMACION = o_DESCRY.toString();
-											}
-										}
-										else
-										{
-											JSONObject o_ERROR = new JSONObject(e_RESPUESTA);
-											e_INFORMACION = o_ERROR.getString("ERROR_CODE");
-										}
-										//region Reporte de datos enviados y recibidos
-										Utilidad.escribirBitacora(getBaseContext(), "Ruta modulo: " + e_RUTA_MODULO + "\n\n", true);
-										Utilidad.escribirBitacora(getBaseContext(), "Datos enviados: " + m_DATOS_PAYLOAD.toString() + "\n", true);
-										Utilidad.escribirBitacora(getBaseContext(), "En espera: " + e_RESULTADO_ESPERADO + "\n", true);
-										//endregion
-
-										//Envio de información de nueva ventana
-										if(e_RESULTADO_ESPERADO.equals(e_INFORMACION))
-										{
-											Utilidad.escribirBitacora(getBaseContext(), "Repuesta: " + e_INFORMACION + "\n", true);
-										}
-										else
-										{
-											Utilidad.escribirBitacora(getBaseContext(), "Repuesta: " + e_INFORMACION + "\n", true);
-										}
-									}
-									catch(Exception o_EX)
-									{
-										o_EX.printStackTrace();
-									}
-								}
+								Parametros o_PARAMETRO = new Parametros("Llave", "Valor");
+								o_PARAMETRO.setE_TEXTO_1(e_LLAVE);
+								o_PARAMETRO.setE_TEXTO_2(e_VALOR);
+								//Agregar fila
+								agregarFila(e_LLAVE, e_VALOR);
 							}
-						);
+						}
+						//elegir ACTION en listado
+						int e_INDEX = ACTIONS.a_WS_EXTS.indexOf(e_ACCION);
+						if( e_INDEX >= 0 )
+						{
+							o_SP_ACCIONES.setSelection(e_INDEX);
+
+							extraccionVistaYLlamado(m_DATOS_PAYLOAD, e_RESULTADO_ESPERADO);
+						}
+						else
+						{
+							Utilidad.mostrar_mensaje(this, "JSON no válido");
+						}
 					}
 					else
 					{
-						Utilidad.mostrar_mensaje(this, "JSON no válido");
+						Utilidad.mostrar_mensaje(getBaseContext(), "Sin datos");
+						o_PROGRESO.dismiss();
 					}
 				}
-				else
+				catch(Exception o_EX)
 				{
-					Utilidad.mostrar_mensaje(getBaseContext(), "Sin datos");
+					Log.e("Error", o_EX.getMessage());
 					o_PROGRESO.dismiss();
 				}
 			}
-			catch(Exception o_EX)
-			{
-				Log.e("Error", o_EX.getMessage());
-				o_PROGRESO.dismiss();
-			}
+			a_DATOS_PRUEBA = null;
 		}
-
-
+		else
+		{
+			extraccionVistaYLlamado(m_DATOS_PAYLOAD, "");
+		}
 	}
 
 	@Override
@@ -399,6 +305,106 @@ public class ActividadPruebaWs
 		o_LAYOUT_HIJO.addView(o_IV);
 
 		o_LAYOUT.addView(o_LAYOUT_HIJO);
+	}
+
+	/**
+	 * Funcion encargada de hacer el llamado del servicio web
+	 * @param m_DATOS_PAYLOAD Contenedor de datos de envio en PAYLOAD
+	 * @param e_RESULTADO Respuestado esperado en llamada de servicio web
+	 */
+	private void extraccionVistaYLlamado(final Map<String, String> m_DATOS_PAYLOAD, final String e_RESULTADO)
+	{
+		//region Recorrido de contenido en hijos de layout
+		for(int e_INDEX2 = 0; e_INDEX2 < o_LAYOUT.getChildCount(); e_INDEX2++)
+		{
+			ViewGroup a_GRUPO_HIJOS = (ViewGroup) o_LAYOUT.getChildAt(e_INDEX2);
+			EditText o_ET_LLAVE = (EditText) a_GRUPO_HIJOS.getChildAt(0);
+			EditText o_ET_VALOR = (EditText) a_GRUPO_HIJOS.getChildAt(1);
+			String e_LLAVE = o_ET_LLAVE.getText().toString();
+			String e_VALOR = o_ET_VALOR.getText().toString();
+
+			m_DATOS_PAYLOAD.put(e_LLAVE, e_VALOR);
+		}
+		//endregion
+
+		JSONObject o_JSON_OBJECT = new JSONObject(m_DATOS_PAYLOAD);
+		String o_JSON_PARSE = Comunicacion.encriptarLlavePublica(o_JSON_OBJECT, this);
+		//Elementos de envio
+		RequestParams o_PARAMETROS = new RequestParams();
+		o_PARAMETROS.put("FINGERPRINT", Comunicacion.crearFingerprint(this));
+		o_PARAMETROS.put("PAYLOAD", o_JSON_PARSE);
+
+		final String e_RUTA_MODULO = o_SP_ACCIONES.getSelectedItem().toString();
+		AsyncHttpClient o_CLIENTE = new AsyncHttpClient();
+		o_CLIENTE.post(
+			Constant.e_URL_BASE + Constant.e_URL_PATH + Constant.e_EXT_ELEGIDO + e_RUTA_MODULO,
+			o_PARAMETROS, new JsonHttpResponseHandler()
+			{
+				@Override
+				public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject o_RESPUESTA)
+				{
+					o_PROGRESO.dismiss();
+					//region Reporte de datos enviados y recibidos
+					Utilidad.escribirBitacora(getBaseContext(), "\nRuta modulo: " + e_RUTA_MODULO, true);
+					Utilidad.escribirBitacora(getBaseContext(), "Datos enviados: " + m_DATOS_PAYLOAD.toString() + "\n", true);
+					Utilidad.escribirBitacora(getBaseContext(),
+						"En espera: " + (e_RESULTADO.isEmpty()  ? "No proporcionada" : e_RESULTADO) +  "\n", true);
+					//endregion
+					Utilidad.escribirBitacora(getBaseContext(), "Respuesta no procesada \n", true);
+				}
+
+				@Override
+				public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable)
+				{
+					o_PROGRESO.dismiss();
+					//region Reporte de datos enviados y recibidos
+					Utilidad.escribirBitacora(getBaseContext(), "\nRuta modulo: " + e_RUTA_MODULO, true);
+					Utilidad.escribirBitacora(getBaseContext(), "Datos enviados: " + m_DATOS_PAYLOAD.toString() + "\n", true);
+					Utilidad.escribirBitacora(getBaseContext(),
+						"En espera: " + (e_RESULTADO.isEmpty()  ? "No proporcionada" : e_RESULTADO) +  "\n", true);
+					//endregion
+					Utilidad.escribirBitacora(getBaseContext(), "Respuesta no procesada \n", true);
+				}
+
+				@Override
+				public void onSuccess(int statusCode, Header[] a_CABECERA, JSONObject o_RESPUESTA)
+				{
+					o_PROGRESO.dismiss();
+					String e_INFORMACION = "";
+					try
+					{
+						String e_RESPUESTA = o_RESPUESTA.getString("RETURN");
+						if( o_RESPUESTA.getBoolean("success") )
+						{
+							JSONObject o_DESCRY = Comunicacion.desencriptar_llave_publica(e_RESPUESTA, ActividadPruebaWs.this);
+
+							if( o_DESCRY != null )
+							{
+								e_INFORMACION = o_DESCRY.toString();
+							}
+						}
+						else
+						{
+							JSONObject o_ERROR = new JSONObject(e_RESPUESTA);
+							e_INFORMACION = o_ERROR.getString("ERROR_CODE");
+						}
+						//region Reporte de datos enviados y recibidos
+						Utilidad.escribirBitacora(getBaseContext(), "\nRuta modulo: " + e_RUTA_MODULO, true);
+						Utilidad.escribirBitacora(getBaseContext(), "Datos enviados: " + m_DATOS_PAYLOAD.toString() + "\n", true);
+						Utilidad.escribirBitacora(getBaseContext(),
+							"En espera: " + (e_RESULTADO.isEmpty()  ? "No proporcionada" : e_RESULTADO) +  "\n", true);
+						//endregion
+
+						//Envio de información de nueva ventana
+						Utilidad.escribirBitacora(getBaseContext(), "Repuesta: " + e_INFORMACION + "\n", true);
+					}
+					catch(Exception o_EX)
+					{
+						o_EX.printStackTrace();
+					}
+				}
+			}
+		);
 	}
 
 	/**
@@ -509,7 +515,8 @@ public class ActividadPruebaWs
 
 	public static String getPath(Context context, Uri uri)
 	{
-		if ("content".equalsIgnoreCase(uri.getScheme())) {
+		if("content".equalsIgnoreCase(uri.getScheme()))
+		{
 			String[] projection = { "_data" };
 			Cursor o_CURSOR;
 

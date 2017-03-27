@@ -1,8 +1,8 @@
 package cburuel.stx.mx.testingws.Actividades;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import cburuel.stx.mx.testingws.R;
@@ -13,13 +13,15 @@ import cburuel.stx.mx.testingws.R;
  */
 
 	public class ActividadLog
-	extends Activity
+	extends AppCompatActivity
 {
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.actividad_log);
+
+		setTitle("Ultimo LOG creado");
 
 		TextView o_TV = (TextView) findViewById(R.id.tvContenidoLog);
 

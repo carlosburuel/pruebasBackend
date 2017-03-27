@@ -15,6 +15,7 @@
 	<string name="enviar">enviar</string>
 	<string name="salir">Salir</string>
 	<string name="rutaModulo">Ruta módulo</string>
+	<string name="cargaJSON">Carga de JSON</string>
 	<string name="parametros">Parametros</string>
 	<string name="resultado">Resultado</string>
 	<string name="directas">Pruebas Directas</string>
