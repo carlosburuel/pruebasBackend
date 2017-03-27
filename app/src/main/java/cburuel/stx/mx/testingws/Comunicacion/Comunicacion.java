@@ -274,7 +274,7 @@ public class Comunicacion
 
 	public static String obtenerContenidoArchivo(Context o_CONTEXTO, String e_NOMBRE_ARCHIVO)
 	{
-		String e_JWT;
+		String e_JWT= "";
 		try
 		{
 			//Abrimos el archivo
@@ -284,7 +284,17 @@ public class Comunicacion
 			//Creamos el Buffer de Lectura
 			BufferedReader o_BUFFER = new BufferedReader(new InputStreamReader(o_STREAM));
 			//Leer el archivo linea por linea
-			e_JWT = o_BUFFER.readLine();
+			String e_LINEA;
+			int e_NUM_LINEAS = 0;
+			while( (e_LINEA = o_BUFFER.readLine()) != null )
+			{
+				e_JWT += e_LINEA + "\n\n";
+				e_NUM_LINEAS++;
+			}
+			if( e_NUM_LINEAS < 2 )
+			{
+				e_JWT = e_JWT.substring(0, e_JWT.length()-2);
+			}
 		}
 		catch(Exception e)
 		{

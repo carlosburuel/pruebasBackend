@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileWriter;
 
 /**
  * @author Carlos Buruel
@@ -53,6 +57,27 @@ public class Utilidad
 			}
 		}
 		return false;
+	}
+
+
+	public static void escribirBitacora(Context o_CONTEXTO, String e_TEXTO, boolean e_ES_VOLVER_ESCRIBIR)
+	{
+		try
+		{
+			String e_CARPETA = o_CONTEXTO.getApplicationInfo().dataDir;
+//			File o_ARCHIVO = new File(e_CARPETA + "/bitacora.txt");
+
+			FileWriter f_ARCHIVO = new FileWriter(
+				e_CARPETA + "/files/bitacora.txt",
+				e_ES_VOLVER_ESCRIBIR);
+			f_ARCHIVO.write(e_TEXTO);
+			f_ARCHIVO.flush();
+			f_ARCHIVO.close();
+		}
+		catch(Exception o_EX)
+		{
+			Log.e("Error", o_EX.getMessage());
+		}
 	}
 
 	/**

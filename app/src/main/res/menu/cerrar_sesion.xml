@@ -2,9 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 	<item
+		android:id="@+id/itemLog"
+		android:title="@string/log"
+		android:icon="@drawable/ic_log"
+		app:showAsAction="ifRoom"/>
+
+	<item
 		android:id="@+id/itemCerrar"
 		android:title="@string/salir"
 	  android:icon="@drawable/ic_bug"
-	  app:showAsAction="ifRoom"
-		/>
+	  app:showAsAction="ifRoom"/>
 </menu>
